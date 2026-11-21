@@ -1,72 +1,92 @@
-PERSON 1 - GAME MECHANICS, STORY WORLDS, AND CORE INTERACTION
-Goal: Own the game field, Story Mode progression, and Worlds 1-3.
-
-References:
-- Game_Design.pdf: game structure, missions, learning outcomes, mode rules, and scoring
-- game.js: current mechanics and state management
-- index.html: game controls and modal structure
-- style.css: layouts and responsive states
+PERSON 1 - ACTUAL MISSING FEATURES FROM THE GAME DESIGN
+Scope: verify and finish only the gaps visible in the current game.js/index/style implementation.
+Scope is not World 4-5, assessments, skins, or badges.
 
 TASKS
-[ ] 1. Correct Story Mode mission counts
-    - Align every Learn, Practice, and Challenge level with the design of 3 missions per level.
-    - Change MISSION_COUNTS in game.js and verify mission dots, counters, completion, and score totals.
-    - Keep Endless Mode behavior separate from the 3-mission Story Mode limit.
-    - Acceptance: 15 Story levels each complete in exactly 3 missions.
 
-[ ] 2. Finalize World 1: Understanding Angles
-    - Review Level 1 Learn: show all angle positions and teach 0°, 30°, 45°, 60°, 90°, and 150°.
-    - Review Level 2 Practice: use random starting angles and clockwise/counterclockwise turns.
-    - Review Level 3 Challenge: hide angle labels, include moving visual obstructions, and avoid timing mismatch.
-    - Acceptance: all three missions match LO1 and the selected answers produce the specified angle.
+[ ] 1. Change the Story Mission Count from 5 to 3
+    - game.js currently defines MISSION_COUNTS as [[5,5,5], ...].
+    - Set every World 1-3 Learn/Practice/Challenge level to 3 missions.
+    - Update mission counters and dots through the existing missionCount() and renderMission() flow.
+    - Acceptance: each of the 9 levels assigned to Person 1 ends after exactly 3 Story missions.
+    - Note: Endless Mode should remain repeat/randomized and must not inherit this 3-mission limit.
 
-[ ] 3. Finalize World 2: Quadrants
-    - Verify QI, QII, QIII, and QIV hit areas and their x/y sign labels.
-    - Review Level 1 Learn: quadrant selection by x > 0/y < 0 type clues.
-    - Review Level 2 Practice: map 150°, 300°, 225° and replay angles to the correct quadrant.
-    - Review Level 3 Challenge: implement ordered clue paths such as 135° -> 315° -> 225°.
-    - Acceptance: wrong quadrant choices lose the attempt correctly and axis points are never classified as quadrants.
+[ ] 2. Replace World 1 Learn missions with the design questions
+    - makeQuestion(world=0, stage=0) currently generates [0°, 30°, 45°, 60°, 90°, 150°] by index.
+    - With 3 missions, the current first three are 0°, 30°, and 45°, which do not match the design.
+    - Implement the three World 1 Learn missions explicitly: Find 30°, find the right angle, and find 150°.
+    - Keep all 0°, 30°, 45°, 60°, and 90° positions visible in the Learn level.
+    - Acceptance: mission prompts and correct answers match 30°, 90°, and 150°.
 
-[ ] 4. Finalize World 3: Sin, Cos, and Movement
-    - Make the Learn level clearly teach x = cos theta and y = sin theta.
-    - Complete the Practice level by mapping angle positions to their x/y coordinates.
-    - Complete the Challenge level with moving-mouse and patrolling-obstacle behavior.
-    - Clarify tan theta behavior only where it belongs, because LO3 in the design also mentions tan.
-    - Acceptance: each question moves or aims the cat at the coordinate that matches cos/sin.
+[ ] 3. Verify World 1 Practice mission answers
+    - Current first-play combos cover 30° -> 120°, 90° -> 60°, and 0° -> 270°, which match the design’s first three mission examples.
+    - Verify that clockwise and counterclockwise calculations use the same direction shown to the player.
+    - Replay questions may stay randomized.
+    - Acceptance: no shown turn can produce a visually incorrect target.
 
-[ ] 5. Improve angle and coordinate input
-    - Verify mouse, keyboard, pointer, and touch input all select the same target.
-    - Prevent duplicate catch actions while a mission is busy or a modal is open.
-    - Validate WASD, arrow keys, C, V, Enter, and Space behavior.
-    - Acceptance: no accidental double scoring or missed input across desktop and mobile.
+[ ] 4. Verify World 1 Challenge route and obstacle behavior
+    - The Challenge currently uses three two-turn routes, hidden angle labels, moving bees, and a whole-level timer.
+    - Preserve the design’s first three route types and hide labels while the Challenge is active.
+    - Verify each bee position is unavailable as an answer and that selected bees produce an obstacle penalty.
+    - Acceptance: the three-mission Challenge produces the correct final angle and no bee is also the correct mouse.
 
-[ ] 6. Correct hearts and star rules
-    - Start Story and Endless runs with 3 hearts.
-    - Track 3-star, 2-star, and 1-star results consistently with hearts remaining.
-    - Keep Learn/Tutorial mistakes from reducing hearts during explicit tutorial actions.
-    - Acceptance: repeated restarts and replayed levels calculate stars identically.
+[ ] 5. Replace World 2 Learn missions with QI/QIII/QIV
+    - stage=0 currently uses [45°, 135°, 225°, 315°, 60°].
+    - This means the first mission asks QI? after count is 3, but there is no mission for the design’s exact sign-pair sequence.
+    - Implement these three missions:
+      1. x > 0 and y > 0 -> QI
+      2. x < 0 and y < 0 -> QIII
+      3. x > 0 and y < 0 -> QIV
+    - Acceptance: the mission prompts and selected quadrant IDs match QI, QIII, and QIV.
 
-[ ] 7. Verify scoring and combo rules
-    - +10 for a correct catch.
-    - +5 for a correct first attempt.
-    - +5 for completion without hints.
-    - +5 combo bonus after 3 consecutive correct catches.
-    - Remove points for wrong answers.
-    - Acceptance: 4 review catches demonstrate the expected HUD score and streak values.
+[ ] 6. Replace World 2 Practice angle missions
+    - stage=1 currently uses [150°, 225°, 330°, 45°, 135°] on first play.
+    - The design specifies 150° -> QII, 300° -> QIV, and 225° -> QIII.
+    - Implement those exact three missions before replay randomization.
+    - Acceptance: the map, hover labels, and correct answer for each of these three angles are consistent.
 
-[ ] 8. Verify level unlocking and replay
-    - Unlock each next level after that level is completed.
-    - Unlock the next world after all 3 levels in the current world are completed.
-    - Allow Free Explore/Map selection to bypass progression for testing or explicit use.
-    - Acceptance: localStorage state unlocks and relocks exactly as designed after reset, completion, and replay.
+[ ] 7. Add the missing World 2 Challenge axis-path missions
+    - World 2 Challenge currently randomizes three angle-only paths containing 45°, 135°, 225°, and 315°.
+    - The design requires paths that can include an axis: 45° -> 180° -> 270° -> QI -> x-axis -> y-axis.
+    - Build ordered clue sequences that include both quadrant and axis outcomes.
+    - Acceptance: the Challenge identifies each 45°/180°/270° step correctly and never reports an axis as QI/QII/QIII/QIV.
 
-[ ] 9. Build a manual test matrix for Person 1 areas
-    - Test all 9 missions in Worlds 1-3.
-    - Test replay, wrong answers, hints, timeout, restarts, and level completion.
-    - Record desktop and mobile findings.
-    - Acceptance: each mission has pass/fail evidence and no blocker remains unresolved.
+[ ] 8. Complete World 2 game behavior gaps
+    - Verify cat movement is in a 4-quadrant field and all 4 quadrant targets are reachable.
+    - Verify wrong quadrant/box searches lose or penalize an attempt according to the hearts rule.
+    - Verify that QI-QIV labels and x/y sign labels remain visible in the Learn level.
+    - Acceptance: no answer box is both a false target and a valid quadrant.
 
-HANDOFF TO PERSON 2
-- Provide stable APIs and state fields for mission, hearts, score, timer, stars, and unlock state.
-- Do not change the shared localStorage schema without documenting it in the final handoff.
-- Leave questions in a small, reusable data format and keep World 4-5 rendering isolated.
+[ ] 9. Fix World 3 coordinate learning and testing
+    - stage=0 currently tells the player that a mouse is on a horizontal or vertical axis but does not explicitly present x = cos θ and y = sin θ as a mission answer.
+    - Make each Learn mission demonstrate the coordinate relationship clearly.
+    - stage=1 should ask the player to reach a stated angle and use COS/SIN, but should verify it is possible to derive the coordinate rather than merely walk to the angle.
+    - Verify the C and V axis restrictions prevent diagonal movement.
+    - Acceptance: missions visibly reinforce x = cos θ and y = sin θ.
+
+[ ] 10. Complete World 3 Challenge behavior
+    - Verify the moving mouse, mouse position changes, and patrolling dog each affect gameplay as designed.
+    - Verify the cat returns to the safe area after a dog hit or missed catch.
+    - Verify tan θ is not introduced in World 3 unless it is part of the mission text; full tan implementation belongs to World 5.
+    - Acceptance: the Challenge can be completed with 3 hearts and 3 missions, or the current 5-mission count is corrected first.
+
+[ ] 11. Verify shared mechanics that are already partially implemented
+    - Wrong answers call wrong(), but a wrong answer during Learn currently lowers no hearts.
+    - Wrong answers during Practice/Challenge lower one heart and end the run at zero hearts.
+    - Challenge levels have a shared timer; the game grants 5 seconds in success() for a correct catch.
+    - Scoring already includes +10 for a catch, +5 for first attempt, +5 for no hint, and +5 for a 3-catch combo.
+    - Acceptance: test these mechanics with exactly 3 missions; do not add a second scoring implementation.
+
+[ ] 12. Verify the replay/unlock flow
+    - Completion saves stars and best score and increases saved.unlocked.
+    - Next level and next world unlocking already have a shared level number; verify it is not affected by 5-mission intermediates.
+    - Free Explore in the world map must remain separate from normal progression.
+    - Acceptance: 3 levels must be completed before the next world is unlocked.
+
+[ ] 13. Add a World 1-3 regression test matrix
+    - Test 3 mission counts for all 9 levels.
+    - Test exact World 1 and World 2 design missions.
+    - Test World 3 axis movement and dog behavior.
+    - Test wrong answer, hint, replay, timer, restart, stars, and unlocking.
+    - Test mouse, touch, WASD/arrows, C/V, Enter, and Space.
+    - Acceptance: save pass/fail results for desktop and mobile; no task is marked complete without evidence.
