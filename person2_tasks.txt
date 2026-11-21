@@ -1,0 +1,81 @@
+PERSON 2 - WORLDS 4-5, ASSESSMENTS, REWARDS, AND VALIDATION
+Goal: Complete the remaining learning outcomes, rewards, reports, responsiveness, and test verification.
+
+References:
+- Game_Design.pdf: LO4/LO5, rewards, replayability, and learning assessment
+- game.js: quiz bank, skins, badges, coin handling, report, and timer logic
+- index.html: home screen and game shells
+- style.css: mobile, dialog, menu, and card layouts
+
+TASKS
+[ ] 1. Finalize World 4: Signs of Sin and Cos
+    - Complete Learn missions for cos/sin signs in QI-QIV.
+    - Complete Practice by dragging/clicking COS and SIN signs for an angle.
+    - Complete Challenge with ordered sign clues and the safe-area/patrolling-dog mechanic.
+    - Verify angle signs: QI (+,+), QII (-,+), QIII (-,-), QIV (+,-).
+    - Acceptance: correct sign combinations lead to the correct quadrant and all 3 missions run.
+
+[ ] 2. Finalize World 5: Exact Trigonometric Values
+    - Complete Learn values for sin/cos at 0°, 30°, 45°, 60°, and 90°.
+    - Complete Practice with reference angles and signs in other quadrants.
+    - Complete Challenge with sin, cos, and tan options, moving answer mice, and no hint-table dependency.
+    - Acceptance: exact values are rendered consistently using 1/2, sqrt2/2, sqrt3/2, - forms, and undefined tan if used.
+
+[ ] 3. Build or verify the Endless 10-mission sets
+    - World 1: include angle midpoint, distance, axis, rotation, and angle-range questions.
+    - World 2: cover all quadrants, sign pairs, paths, and coordinate pairs.
+    - World 3: cover x=cos theta, y=sin theta, and safe coordinate calculations.
+    - World 4: cover sign pairs, angles, and ordered three-clue paths.
+    - World 5: cover exact values, reference angles, and tan where specified.
+    - Acceptance: each world supplies at least 10 valid non-repeating Endless missions.
+
+[ ] 4. Audit the endless difficulty ramp
+    - Increase mouse movement, obstruction, or clue complexity as streak or mission count grows.
+    - Reduce hint availability only if consistent with the design.
+    - Preserve 3 hearts until the run ends.
+    - Acceptance: a 10-mission run remains playable and measurable on desktop and mobile.
+
+[ ] 5. Finalize pre-test and post-test assessments
+    - Verify the pre-test is 10 questions and is available before playing.
+    - Verify the post-test stays locked until all 15 Story levels are complete.
+    - Prevent game points and hearts from affecting assessment scores.
+    - Make retakes replace the saved score and preserve the original pre-test for before/after comparison.
+    - Acceptance: pre/post completion states are correct after new progress, replay, and reset.
+
+[ ] 6. Complete learning report and improvement calculation
+    - Compare pre-test and post-test on a consistent percentage scale.
+    - Show in-game first-attempt accuracy and hint usage when available.
+    - Handle missing pre-test or post-test results without false improvement claims.
+    - Acceptance: report results remain accurate after retakes and browser refresh.
+
+[ ] 7. Verify Fish Coins rewards
+    - Award 10 Fish Coins once for the first completed pre-test.
+    - Award mission, level, or bonus coins only according to a documented reward schedule.
+    - Prevent coin duplication on restarts and retakes.
+    - Acceptance: localStorage coin totals are stable across reload, replay, and retest.
+
+[ ] 8. Verify skins and achievement badges
+    - Verify earned skins unlock only after the stated levels or modules.
+    - Verify purchasable skins deduct Fish Coins once and stay owned after reload.
+    - Verify badges for first catch, 10 first-attempt catches, streaks, perfect levels, world completion, and champion status.
+    - Acceptance: locked, unlocked, equipped, and sold-out states are shown correctly.
+
+[ ] 9. Improve responsive layout and accessibility
+    - Test home, Story, World Map, modal, quiz, journal, and mission screens at 360px, 600px, 850px, and desktop widths.
+    - Verify keyboard focus, dialog labels, SVG controls, button names, and reduced-motion behavior.
+    - Fix text overflow and ensure touch targets remain usable.
+    - Acceptance: no clipped controls or inaccessible primary action on supported viewport sizes.
+
+[ ] 10. End-to-end validation
+    - Test first-time player -> pre-test -> World 1 -> unlock chain -> all 15 levels -> post-test -> report.
+    - Test replay, reset, Free Explore, Mouse Rush, skins, badges, refresh, and localStorage corruption.
+    - Run browser console/error checks and basic HTML/CSS/JS syntax checks.
+    - Acceptance: save one pass/fail report and fix any P0/P1 blocker before delivery.
+
+SHARED ACCEPTANCE CHECKLIST
+- 5 worlds, 15 Story levels, 3 missions per level.
+- Story Mode unlocked sequentially.
+- Mouse Rush supports repeated randomized missions.
+- Pre-test and post-test are recorded separately.
+- Coins, stars, skins, badges, high score, and current level persist on this device.
+- Desktop, mobile, keyboard, mouse, and touch interactions are covered.

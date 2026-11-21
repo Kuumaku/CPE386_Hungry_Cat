@@ -1,0 +1,72 @@
+PERSON 1 - GAME MECHANICS, STORY WORLDS, AND CORE INTERACTION
+Goal: Own the game field, Story Mode progression, and Worlds 1-3.
+
+References:
+- Game_Design.pdf: game structure, missions, learning outcomes, mode rules, and scoring
+- game.js: current mechanics and state management
+- index.html: game controls and modal structure
+- style.css: layouts and responsive states
+
+TASKS
+[ ] 1. Correct Story Mode mission counts
+    - Align every Learn, Practice, and Challenge level with the design of 3 missions per level.
+    - Change MISSION_COUNTS in game.js and verify mission dots, counters, completion, and score totals.
+    - Keep Endless Mode behavior separate from the 3-mission Story Mode limit.
+    - Acceptance: 15 Story levels each complete in exactly 3 missions.
+
+[ ] 2. Finalize World 1: Understanding Angles
+    - Review Level 1 Learn: show all angle positions and teach 0°, 30°, 45°, 60°, 90°, and 150°.
+    - Review Level 2 Practice: use random starting angles and clockwise/counterclockwise turns.
+    - Review Level 3 Challenge: hide angle labels, include moving visual obstructions, and avoid timing mismatch.
+    - Acceptance: all three missions match LO1 and the selected answers produce the specified angle.
+
+[ ] 3. Finalize World 2: Quadrants
+    - Verify QI, QII, QIII, and QIV hit areas and their x/y sign labels.
+    - Review Level 1 Learn: quadrant selection by x > 0/y < 0 type clues.
+    - Review Level 2 Practice: map 150°, 300°, 225° and replay angles to the correct quadrant.
+    - Review Level 3 Challenge: implement ordered clue paths such as 135° -> 315° -> 225°.
+    - Acceptance: wrong quadrant choices lose the attempt correctly and axis points are never classified as quadrants.
+
+[ ] 4. Finalize World 3: Sin, Cos, and Movement
+    - Make the Learn level clearly teach x = cos theta and y = sin theta.
+    - Complete the Practice level by mapping angle positions to their x/y coordinates.
+    - Complete the Challenge level with moving-mouse and patrolling-obstacle behavior.
+    - Clarify tan theta behavior only where it belongs, because LO3 in the design also mentions tan.
+    - Acceptance: each question moves or aims the cat at the coordinate that matches cos/sin.
+
+[ ] 5. Improve angle and coordinate input
+    - Verify mouse, keyboard, pointer, and touch input all select the same target.
+    - Prevent duplicate catch actions while a mission is busy or a modal is open.
+    - Validate WASD, arrow keys, C, V, Enter, and Space behavior.
+    - Acceptance: no accidental double scoring or missed input across desktop and mobile.
+
+[ ] 6. Correct hearts and star rules
+    - Start Story and Endless runs with 3 hearts.
+    - Track 3-star, 2-star, and 1-star results consistently with hearts remaining.
+    - Keep Learn/Tutorial mistakes from reducing hearts during explicit tutorial actions.
+    - Acceptance: repeated restarts and replayed levels calculate stars identically.
+
+[ ] 7. Verify scoring and combo rules
+    - +10 for a correct catch.
+    - +5 for a correct first attempt.
+    - +5 for completion without hints.
+    - +5 combo bonus after 3 consecutive correct catches.
+    - Remove points for wrong answers.
+    - Acceptance: 4 review catches demonstrate the expected HUD score and streak values.
+
+[ ] 8. Verify level unlocking and replay
+    - Unlock each next level after that level is completed.
+    - Unlock the next world after all 3 levels in the current world are completed.
+    - Allow Free Explore/Map selection to bypass progression for testing or explicit use.
+    - Acceptance: localStorage state unlocks and relocks exactly as designed after reset, completion, and replay.
+
+[ ] 9. Build a manual test matrix for Person 1 areas
+    - Test all 9 missions in Worlds 1-3.
+    - Test replay, wrong answers, hints, timeout, restarts, and level completion.
+    - Record desktop and mobile findings.
+    - Acceptance: each mission has pass/fail evidence and no blocker remains unresolved.
+
+HANDOFF TO PERSON 2
+- Provide stable APIs and state fields for mission, hearts, score, timer, stars, and unlock state.
+- Do not change the shared localStorage schema without documenting it in the final handoff.
+- Leave questions in a small, reusable data format and keep World 4-5 rendering isolated.
