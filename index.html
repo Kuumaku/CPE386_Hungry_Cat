@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fff8ed"><meta name="description" content="A little cat. A big adventure in trigonometry. Explore five worlds, solve puzzles, and catch some clever mice."><title>Hungry Cat</title><link rel="stylesheet" href="style.css"></head>
+<body class="home-active">
+<section id="home-screen" class="home-screen" aria-label="Main menu">
+ <div class="home-wrap">
+  <header class="home-hero">
+   <div class="home-cat-scene" aria-label="A cat in a meadow"><svg viewBox="0 0 300 215" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><linearGradient id="home-sky" x2="0" y2="1"><stop stop-color="#d6e8c7"/><stop offset=".62" stop-color="#d5e7b2"/><stop offset="1" stop-color="#b3d394"/></linearGradient></defs><rect width="300" height="215" fill="url(#home-sky)"/><ellipse cx="150" cy="191" rx="57" ry="12" fill="#779b66" opacity=".28"/><g transform="translate(150 112) scale(1.15)"><use href="#cat-art"/></g><g fill="#fff7d7"><circle cx="48" cy="166" r="4"/><circle cx="254" cy="159" r="4"/><circle cx="73" cy="185" r="3"/><circle cx="226" cy="186" r="3"/></g></svg></div>
+   <div class="home-intro"><p class="home-eyebrow">A LITTLE MATH · A LITTLE MAGIC</p><div class="home-logo"><div><h1>Hungry Cat</h1><p>A little math adventure</p></div></div><p class="home-description">Use angles, quadrants, sine and cosine to help a curious cat catch some clever mice.</p><p class="home-tip">Five worlds to explore, one little discovery at a time.</p></div>
+   <button id="home-sound" class="home-sound" aria-label="Enable sound" title="Toggle sound">♪</button>
+  </header>
+  <div class="home-assessment"><div class="home-assessment-icon" aria-hidden="true">✎</div><div class="home-assessment-copy"><strong id="home-pre-title">Step 1: Take the Pre-test Before Playing!</strong><span id="home-pre-copy">Complete 10 quick questions to record your baseline score & earn bonus Fish Coins.</span></div><button id="home-pre" class="home-pre-button">Start Pre-test (10 Qs)</button></div>
+  <div class="home-modes"><button id="home-story" class="home-mode home-story"><span class="home-mode-icon" aria-hidden="true">❧</span><span><strong>Story Mode</strong><small>Explore all five worlds</small></span></button><button id="home-rush" class="home-mode home-rush"><span class="home-mode-icon" aria-hidden="true">∞</span><span><strong>Mouse Rush</strong><small>Play the endless adventure</small></span></button></div>
+  <div class="home-extras"><button id="home-skins"><span aria-hidden="true">◌</span> Cat Skins</button><button id="home-badges"><span aria-hidden="true">✧</span> Badges</button><button id="home-report"><span aria-hidden="true">▤</span> Learning Report</button></div>
+  <div class="home-stats" aria-label="Your progress"><div><span>FISH COINS</span><strong><b id="home-coins">0</b></strong></div><div><span>TOTAL STARS</span><strong><b id="home-stars">0 / 45</b></strong></div><div><span>MODULES</span><strong class="blue" id="home-modules">0 / 5</strong></div><div><span>ENDLESS BEST</span><strong class="pink"><b id="home-best">0</b></strong></div><div><span>ASSESSMENT</span><strong class="purple" id="home-assessment-status">Required</strong></div></div>
+  <p class="home-footnote">Your adventure is saved on this device. ✦</p>
+ </div>
+</section>
+<aside class="sidebar">
+ <a class="brand" href="./" aria-label="Hungry Cat home"><span class="brand-cat"><svg width="38" height="40" viewBox="0 0 40 40" aria-hidden="true"><path d="M6 20 5 7l12 8h6l12-8-1 16c-1 15-27 15-28-3Z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/><path d="m12 24 4 1m8 0 4-1m-10 6h4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span><span>hungry<span class="brand-light">cat</span><small>MATH ADVENTURE</small></span></a>
+ <div class="sidebar-label">YOUR ADVENTURE</div>
+ <nav id="world-nav" aria-label="Worlds"></nav>
+ <button class="rush" id="endless"><span>∞</span><div>Mouse Rush<small>Endless adventure</small></div><span class="tiny-tag">PLAY</span></button>
+ <div class="sidebar-bottom"><div class="mini-cat">✦</div><strong>A little curiosity.<br>A whole lot of discovery.</strong><p>One mouse at a time.</p><button class="journal-link" id="journal">▤ &nbsp; Learning journal</button></div>
+ <div class="prototype">PLAYABLE PROTOTYPE <span>v1.0</span></div>
+</aside>
+<div class="app">
+<header><button class="secondary return-home" id="return-home">⌂ &nbsp; Main menu</button><div class="breadcrumb">Story mode <span>/</span> <strong id="crumb">World 1</strong></div><div class="header-actions"><span class="save-status">✓ Progress saved on this device</span><button class="icon-button" id="sound" aria-label="Enable sound" title="Toggle sound">♪</button><button class="avatar" id="avatar" aria-label="Open learning journal">HC</button></div></header>
+<main>
+ <div class="heading"><div><div class="eyebrow" id="eyebrow">WORLD 01 · UNDERSTANDING ANGLES</div><h1 id="world-title">Angle Forest<span>✦</span></h1><p id="world-desc">Follow your curiosity. Find the angle. Catch the mouse.</p></div><button class="secondary" id="map-button">▦ &nbsp; World map</button></div>
+ <section class="assessment-strip" aria-label="Learning assessments">
+  <button id="assessment-pre" class="assessment-entry"><span class="assessment-symbol">01</span><span><strong>Pre-test <small>ก่อนเรียน</small></strong><span id="pre-status">10 questions · before your adventure</span></span><span class="assessment-action" id="pre-action">Start</span></button>
+  <button id="assessment-post" class="assessment-entry"><span class="assessment-symbol">02</span><span><strong>Post-test <small>หลังเรียน</small></strong><span id="post-status">5 questions · after all 15 levels</span></span><span class="assessment-action" id="post-action">View</span></button>
+  <button id="assessment-results" class="assessment-results">View results</button>
+ </section>
+ <div class="level-strip"><div class="level-tabs" id="level-tabs"></div><div class="strip-end"><span class="tiny-leaf">❧</span> <span id="level-tag">Take your time. You’re learning.</span></div></div>
+ <div class="play-layout">
+ <section class="game-shell" aria-label="Interactive game field">
+  <div class="field-top"><div class="location-pill"><span>❧</span> <span id="location">THE FOREST CLEARING</span></div><div class="hearts" id="hearts" aria-label="3 hearts">♥ ♥ ♥</div></div>
+  <svg id="field" viewBox="0 0 900 690" role="group" aria-label="Unit circle game. Choose an angle or move the cat with WASD."><defs>
+   <radialGradient id="grass"><stop stop-color="#e0edb8"/><stop offset="1" stop-color="#c6dfa0"/></radialGradient>
+   <radialGradient id="surround"><stop stop-color="#c3dbac"/><stop offset="1" stop-color="#90b99a"/></radialGradient>
+   <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#3d6b48" flood-opacity=".17"/></filter>
+   <pattern id="grassTexture" width="78" height="67" patternUnits="userSpaceOnUse"><path d="M15 29l-3-5m3 5 3-7M58 52l-3-4m3 4 3-5" stroke="#7ca165" stroke-width="2" stroke-linecap="round" opacity=".27"/><circle cx="41" cy="14" r="1.8" fill="#f8f4c9" opacity=".7"/></pattern>
+   <g id="bush"><ellipse cy="12" rx="27" ry="10" fill="#517c52" opacity=".18"/><path d="M-29 7C-39-9-24-24-12-20C-9-38 15-36 19-21C39-23 43 0 29 9Z" fill="#57955c" stroke="#41794e" stroke-width="2"/><path d="M-23-5C-22-19-10-18-7-11C-5-27 15-27 18-12C28-17 34-5 29 0" fill="#7daf67"/><path d="M-15-8l3-6m22 4 3-6" stroke="#a5c77a" stroke-width="3" stroke-linecap="round"/><circle cx="-13" cy="2" r="3" fill="#eac889"/><circle cx="21" cy="-4" r="2.5" fill="#eac889"/></g>
+   <g id="tree"><ellipse cy="45" rx="49" ry="16" fill="#456d56" opacity=".16"/><path d="M-7 8l-4 36h22L6 9" fill="#947e59"/><path d="M1-70C-42-76-53-39-34-25C-65-5-37 32-12 24C12 49 55 18 39-6C66-28 34-64 15-57Z" fill="#427c5d"/><path d="M-3-64C-33-67-45-36-25-26C-48-9-28 16-10 10C11 33 45 6 31-11C51-30 26-54 11-46Z" fill="#619466"/><path d="M-3-50C-21-52-28-35-15-27M12-17C27-19 29-6 22-1" stroke="#8bb078" stroke-width="9" stroke-linecap="round" fill="none"/></g>
+   <g id="mouse"><ellipse cy="14" rx="20" ry="7" fill="#4e7158" opacity=".2"/><path d="M15 7q27-14 27 2q0 8-10 3" fill="none" stroke="#b78b9c" stroke-width="3" stroke-linecap="round"/><ellipse cy="1" rx="18" ry="14" fill="#aaa7bc"/><circle cx="-11" cy="-11" r="10" fill="#bcb8ce"/><circle cx="-11" cy="-11" r="6" fill="#e3b9c4"/><circle cx="9" cy="-12" r="10" fill="#bcb8ce"/><circle cx="9" cy="-12" r="6" fill="#e3b9c4"/><ellipse cy="3" rx="15" ry="12" fill="#c6c2d3"/><circle cx="-6" cy="0" r="2.2" fill="#39464a"/><circle cx="6" cy="0" r="2.2" fill="#39464a"/><path d="m-3 6 3 3 3-3" fill="#bd8798"/><path d="M-11 6l-12-2m12 6-12 2m34-6 12-2m-12 6 12 2" stroke="#7b798e" stroke-width="1.5"/></g>
+   <g id="cat-art" stroke="#563c29" stroke-width="2.6" stroke-linejoin="round"><ellipse cy="19" rx="29" ry="36" fill="#46633d" opacity=".18" stroke="none"/><g class="cat-tail"><path d="M0 32Q-2 50-8 68" stroke="#563c29" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M0 32Q-2 50-8 68" stroke="var(--cat-color,#ef9c45)" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="-8" cy="68" r="4" fill="#fff9ed" stroke="none"/></g><ellipse cx="-23" cy="25" rx="7" ry="12" fill="#fff9ed"/><ellipse cx="23" cy="25" rx="7" ry="12" fill="#fff9ed"/><ellipse cy="14" rx="25" ry="32" fill="#fff9ed"/><path d="M-21-3Q-5-3-8 15Q-16 29-23 14M21-3Q5-3 8 15Q16 29 23 14" fill="var(--cat-color,#ef9c45)" stroke="none"/><path d="M-24-21L-27-40-10-31M24-21L27-40 10-31" fill="var(--cat-color,#ef9c45)"/><path d="M-22-32l2 10 7-6m35-4-2 10-7-6" fill="#efb4b4" stroke="none"/><ellipse cy="-16" rx="29" ry="25" fill="#fff9ed"/><path d="M-25-29Q-10-37-8-20Q-7-4-21-8Q-29-13-25-29M25-29Q10-37 8-20Q7-4 21-8Q29-13 25-29" fill="var(--cat-color,#ef9c45)" stroke="none"/><circle cx="-11" cy="-25" r="5" fill="#473329" stroke="none"/><circle cx="11" cy="-25" r="5" fill="#473329" stroke="none"/><circle cx="-12" cy="-27" r="1.7" fill="white" stroke="none"/><circle cx="10" cy="-27" r="1.7" fill="white" stroke="none"/><path d="m-3-33 3 3 3-3" stroke="#d68991" stroke-width="2" fill="#e99ba4"/><path d="M-22-28l-14-5m13 10-14-1m59-4 14-5m-13 10 14-1" stroke-width="1.7" fill="none" stroke-linecap="round"/></g>
+   <g id="box"><ellipse cy="27" rx="34" ry="9" fill="#446d45" opacity=".18"/><rect x="-28" y="-24" width="56" height="50" rx="6" fill="#bd9360" stroke="#8d704b" stroke-width="2"/><path d="M-25-17h50M-25 19h50M-20-15l40 31M20-15l-40 31" stroke="#dfb982" stroke-width="5"/><circle cy="2" r="5" fill="#8d704b"/></g>
+  </defs><g id="scenery"></g><g id="board"></g><g id="entities"></g><g id="aim" pointer-events="none"></g><g id="hint-arrows" pointer-events="none" aria-hidden="true"></g><g id="axis-cue" aria-hidden="true"></g><g id="cat"><use href="#cat-art"/></g><g id="proximity-cue" aria-hidden="true"></g><g id="effects"></g></svg>
+  <div class="field-bottom"><span id="field-help">Click a bush to aim your paw</span><span class="field-sign">✦ A LITTLE MATH, A LITTLE MAGIC</span></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+ </section>
+ <aside class="mission-panel">
+  <div class="mission-card"><div class="card-label"><span>YOUR MISSION</span><span id="mission-count">01 / 03</span></div><div id="challenge-timer" class="challenge-timer" role="timer" aria-label="Time remaining" hidden><span>TIME LEFT · WHOLE LEVEL</span><strong id="timer-value">0:00</strong></div><div class="mouse-badge">✧</div><h2 id="mission-title">A mouse in the leaves</h2><p class="prompt" id="prompt"></p><div id="clue-progress"></div><div class="mission-dots" id="mission-dots"></div><div id="answer-controls"></div><div class="selection"><span id="selection-label">YOUR AIM</span><strong id="selection-value">Choose an angle</strong></div><button class="catch-button" id="catch">Catch the mouse <span>✦</span></button><div class="keyboard-note" id="keyboard-note">or press <kbd>Space</kbd> to catch</div></div>
+  <button class="hint-button" id="hint"><span class="hint-icon">☼</span><span>A little nudge?<small>Get a hint, keep exploring</small></span><span>+</span></button>
+  <div class="hint-content" id="hint-content" hidden></div>
+  <div class="score-card"><div><span>LEVEL SCORE</span><strong id="score">000</strong></div><div><span>FISH COINS</span><strong class="coins"><span>◈</span> <span id="coins">0</span></strong></div></div>
+  <button class="how-to" id="help">ⓘ &nbsp; How to play this level</button>
+ </aside>
+ </div>
+ <footer><div><span class="footer-star">✧</span> <strong id="lesson">Every adventure starts at 0°.</strong><span id="lesson-detail">Angles grow counterclockwise.</span></div><button id="restart">↻ &nbsp; Restart level</button></footer>
+</main>
+</div>
+<dialog id="modal"><div id="modal-content"></div></dialog>
+<script src="game.js"></script>
+</body></html>
