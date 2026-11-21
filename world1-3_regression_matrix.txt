@@ -1,0 +1,67 @@
+HUNGRY CAT - WORLD 1-3 REGRESSION MATRIX
+Run date: 2026-11-21
+
+ENVIRONMENT
+- App: dist/index.html opened from a local file URL
+- Browser runner: integrated Playwright browser
+- Node.js: v26.3.0
+- Docker: unavailable (docker info exited 1); this static client-side app has no infrastructure dependency
+- Desktop viewport: 1201 x 850
+- Mobile viewport: 390 x 844
+- No package.json or existing test runner is present in dist.
+- Test isolation: temporarily backed up the browser's trigo-cat-v1 value, seeded a test profile
+  (pre=0, unlocked=15), then restored the original value. The original value was absent and
+  remained absent after cleanup.
+
+RESULTS
+ID          Scenario                                             Desktop     Mobile
+COUNT-01    Open each of the 9 World 1-3 Story levels; verify     PASS        PARTIAL
+            01 / 03, three mission dots, and timer only on
+            Challenge.
+W1-LEARN    Catch all three design angles: 30, 90, 150 degrees.   PASS        NOT RUN
+W1-PRACTICE Complete all three first-play turns: 120, 60,        PASS        NOT RUN
+            270 degrees; direction text matches the calculation.
+W1-CHALLENGE Complete all three design turns; verify one bee,      PASS        NOT RUN
+            hidden angle labels, bee collision penalty, and
+            correct target exclusion.
+W2-LEARN    Complete QI, QIII, QIV; check sign labels, wrong-     PASS        NOT RUN
+            quadrant heart loss, and automatic hint.
+W2-PRACTICE Requirement waived at the user's request; not tested. WAIVED      WAIVED
+W2-CHALLENGE Complete the 135/315/225 path; begin 45/180/270 path. PARTIAL     NOT RUN
+            First path reached QII, QIV, QIII. In the second,
+            QI was accepted and the next prompt correctly asked
+            for the X-axis. The dog interrupted the attempted
+            X-axis search; X/Y-axis catches were not verified.
+W3-LEARN    Complete 0/90/180 degree axis missions using C/D,    PASS        NOT RUN
+            V/ArrowUp, C/A. Wrong SIN choice for horizontal
+            movement lost a heart and revealed a hint.
+W3-PRACTICE Counter/dots startup only; movement/catch flow not    PARTIAL     NOT RUN
+            run.
+W3-CHALLENGE Counter/dots, 120-second timer, dog and prompt        PARTIAL     NOT RUN
+            startup visible; moving-target and dog-collision
+            completion flow not run.
+
+SHARED INPUT AND STATE CHECKS
+- Desktop mouse: PASS. Angle bushes and quadrant boxes were selected by pointer.
+- Desktop Space: PASS. Catches completed in World 1.
+- Desktop Enter: PASS. Reached and searched World 2 quadrant boxes.
+- Desktop WASD: PASS. D/A moved horizontally in World 3.
+- Desktop ArrowUp: PASS. Moved vertically in World 3.
+- Desktop C/V: PASS. Selected COS/SIN axes and enforced the Learn axis rule.
+- Wrong-answer hearts and Learn hints: PASS in World 2 and World 3.
+- Challenge timer: PASS for World 1; timer was visible and each correct catch added 5 seconds.
+- Stars were written for completed test levels in the temporary profile. Unlock progression
+  was NOT tested because the temporary profile started with unlocked=15.
+- Restart and replay behavior: NOT RUN.
+- Mobile viewport smoke: PASS for World 1 Learn; scrollWidth=375 at innerWidth=390, and both
+  the field and mission panel fit within the viewport.
+- Touch input: NOT RUN. Playwright tap failed with:
+  "The page does not support tap. Use hasTouch context option to enable touch support."
+  The browser tool did not provide a touch-enabled context; a mouse click at the mobile
+  viewport was verified instead.
+
+OVERALL
+PARTIAL. This file records executed pass/fail/waived/unverified results; it is not a full
+sign-off. Remaining verification: touchscreen-capable browser run, all nine levels on mobile,
+World 2 Challenge X/Y-axis catches without dog interruption, World 3 Practice/Challenge flows,
+and restart/replay/unlock progression.

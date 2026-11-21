@@ -35,12 +35,9 @@ TASKS
       3. x > 0 and y < 0 -> QIV
     - Acceptance: the mission prompts and selected quadrant IDs match QI, QIII, and QIV.
 
-[ ] 6. Replace World 2 Practice angle missions
-    - stage=1 currently uses [150°, 225°, 330°, 45°, 135°] on first play.
-    - The design specifies 150° -> QII, 300° -> QIV, and 225° -> QIII.
-    - Implement those exact three missions before replay randomization.
-    - Acceptance: the map, hover labels, and correct answer for each of these three angles are consistent.
-    - Audit: the current first-play list gives 150°, 225°, and 330° for the three missions, not the specified 150°, 300°, and 225°.
+[x] 6. Replace World 2 Practice angle missions
+    - Waived/skipped at the user's request; the existing first-play questions remain unchanged.
+    - This checkbox records the scope decision only, not implementation of the design's 150°, 300°, and 225° sequence.
 
 [x] 7. Add the missing World 2 Challenge axis-path missions
     - First-play paths now match the design: 135° -> 315° -> 225°, 45° -> 180° -> 270°, and 300° -> 150° -> 45°.
@@ -78,10 +75,12 @@ TASKS
     - Acceptance: 3 levels must be completed before the next world is unlocked.
 
 [ ] 13. Add a World 1-3 regression test matrix
-    - Test 3 mission counts for all 9 levels.
-    - Test exact World 1 and World 2 design missions.
-    - Test World 3 axis movement and dog behavior.
-    - Test wrong answer, hint, replay, timer, restart, stars, and unlocking.
-    - Test mouse, touch, WASD/arrows, C/V, Enter, and Space.
-    - Acceptance: save pass/fail results for desktop and mobile; no task is marked complete without evidence.
-    - Audit: no regression test matrix or desktop/mobile pass/fail results are present in the workspace.
+    - Added world1-3_regression_matrix.txt with executed browser checks and explicit PASS, PARTIAL,
+      WAIVED, and NOT RUN results.
+    - Desktop verified: all 9 mission counters/dots; full World 1 Learn/Practice/Challenge,
+      World 2 Learn, and World 3 Learn flows; selected keyboard, mouse, hearts, hints, and timer behavior.
+    - Mobile viewport smoke passed without horizontal overflow; real touch could not be exercised
+      because the integrated browser has no touch-enabled context.
+    - Still pending: World 2 axis catch after dog interruption, World 3 Practice/Challenge flows,
+      replay/restart/unlock behavior, and mobile coverage of all levels.
+    - Keep pending until the remaining verification is run; see the matrix for exact evidence.
