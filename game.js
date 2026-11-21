@@ -2358,6 +2358,32 @@
     updateHome();
     window.scrollTo(0, 0);
   }
+  function confirmNewGame() {
+    openModal(
+      modalTop("START FRESH") +
+        '<h2 class="modal-title">Start a new game?</h2><p class="modal-copy">This will erase Hungry Cat progress saved on this device, including levels, scores, coins, assessments, and unlocked skins. This does not clear your browser cache.</p><p class="assessment-notice" id="new-game-error" role="alert" hidden></p><div class="modal-actions"><button class="catch-button" id="confirm-new-game">Start new game</button><button class="secondary" id="cancel-new-game">Cancel</button></div>',
+    );
+    $("cancel-new-game").onclick = () => $("modal").close();
+    $("confirm-new-game").onclick = () => {
+      try {
+        localStorage.removeItem("trigo-cat-v1");
+      } catch {
+        $("new-game-error").textContent =
+          "Could not clear the saved game. Check your browser storage settings.";
+        $("new-game-error").hidden = false;
+        return;
+      }
+
+      saved = fresh();
+      explore = false;
+      completedLevelToReset = null;
+      updateAssessments();
+      start(0, 0, "story");
+      if ($("modal").open) $("modal").close();
+      showHome();
+      toast("New game started. Your progress is reset.");
+    };
+  }
   function enterGame(mode) {
     if (saved.pre === null) {
       showAssessmentIntro("pre");
@@ -2517,6 +2543,7 @@
   $("home-skins").onclick = showSkins;
   $("home-badges").onclick = showBadges;
   $("home-report").onclick = showJournal;
+  $("home-new-game").onclick = confirmNewGame;
   $("home-sound").onclick = toggleSound;
   $("return-home").onclick = showHome;
   $("assessment-pre").onclick = () => showAssessmentIntro("pre");

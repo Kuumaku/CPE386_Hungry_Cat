@@ -77,7 +77,7 @@ TASKS
     - Scoring already includes +10 for a catch, +5 for first attempt, +5 for no hint, and +5 for a 3-catch combo.
     - Acceptance: test these mechanics with exactly 3 missions; do not add a second scoring implementation.
 
-[ ] 12. Verify the replay/unlock flow
+[x] 12. Verify the replay/unlock flow
     - Completion saves stars and best score and increases saved.unlocked.
     - Next level and next world unlocking already have a shared level number; verify it is not affected by 5-mission intermediates.
     - Free Explore in the world map must remain separate from normal progression.
