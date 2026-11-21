@@ -10,7 +10,7 @@
   const CHALLENGE_SECONDS = [60, 60, 120, 120, 60];
   const MISSION_COUNTS = [
     [3, 3, 3],
-    [3, 3, 3],
+    [4, 3, 3],
     [3, 3, 3],
     [3, 3, 3],
     [3, 3, 3],
@@ -280,12 +280,39 @@
     // Build one World/Level question for Story or replay mode.
     const replay = !!saved.stars[w * 3 + stage + 1] || state.mode === "rush";
     let a;
+
+    // ==================== WORLD 1: ANGLE FOREST ====================
     if (w === 0) {
       if (stage === 0) {
-        a = [0, 30, 45, 60, 90, 150][index % 6];
+        const learnMissions = [
+          {
+            a: 30,
+            prompt: "Find <strong>30°</strong>. Which bush should we search?",
+          },
+          {
+            a: 90,
+            prompt: "Find <strong>90°</strong>. Which bush should we search?",
+          },
+          {
+            a: 150,
+            prompt: "Find <strong>150°</strong>. Which bush should we search?",
+          },
+        ];
+        if (choice.angle !== undefined) {
+          a = choice.angle;
+          return {
+            a,
+            prompt: `Find <strong>${a}°</strong>. Which bush should we search?`,
+          };
+        }
+        if (!replay) {
+          return learnMissions[index % 3];
+        }
+        const replayAngles = [30, 90, 150, 45, 60, 0];
+        a = replayAngles[index % replayAngles.length];
         return {
           a,
-          prompt: `The mouse is hiding at <strong>${a}°</strong>. Which bush should we search?`,
+          prompt: `Find <strong>${a}°</strong>. Which bush should we search?`,
         };
       }
       if (stage === 2) {
@@ -329,6 +356,9 @@
         prompt: `Start at <strong>${start}°</strong>. Turn <strong>${turn}° ${dir === 1 ? "counterclockwise" : "clockwise"}</strong>. Where is the mouse?`,
       };
     }
+
+    // ==================== WORLD 2/4: QUADRANTS AND SIGNS ====================
+    // World 2 uses quadrant questions; World 4 uses their sin/cos sign values.
     if (w === 1 || w === 3) {
       a =
         stage === 0
@@ -362,6 +392,8 @@
                 : "Follow the signs through three clues. The mouse waits at the end.",
       };
     }
+
+    // ==================== WORLD 3: COORDINATE VALLEY ====================
     if (w === 2) {
       a =
         stage === 0
@@ -376,6 +408,8 @@
             : `Reach the mouse at <strong>${a}°</strong>. Use COS for x and SIN for y.${stage === 2 ? "<br>Watch for the patrolling dog!" : ""}`,
       };
     }
+
+    // ==================== WORLD 5: TRIG TREASURE ====================
     const fixed = [
       [
         ["sin", 0],
@@ -425,6 +459,8 @@
   function buildQuestions(w, stage, count) {
     const replay = !!saved.stars[w * 3 + stage + 1] || state.mode === "rush";
     let choices = [];
+
+    // World 1 replay: shuffled angle and turn combinations.
     if (w === 0 && stage > 0 && replay)
       choices = shuffle([
         [30, 90, 1],
@@ -438,6 +474,8 @@
         [90, 60, 1],
         [270, 30, -1],
       ]).map((combo) => ({ combo }));
+
+    // Worlds 2 and 4 replay: ordered three-clue sequences.
     if ((w === 1 || w === 3) && stage === 2) {
       const angles = [45, 135, 225, 315],
         sequences = [];
@@ -455,8 +493,12 @@
     }
     if ((w === 1 || w === 3) && stage === 1 && replay)
       choices = shuffle(INNER).map((angle) => ({ angle }));
+
+    // World 3 replay: coordinate and moving-mouse angles.
     if (w === 2 && stage > 0 && replay)
       choices = shuffle(INNER).map((angle) => ({ angle }));
+
+    // World 5 replay: sin/cos combinations and tan challenges.
     if (w === 4 && stage === 1)
       choices = shuffle(
         ["sin", "cos"].flatMap((fn) => INNER.map((angle) => ({ fn, angle }))),
@@ -706,18 +748,22 @@
     }
   }
   function drawBoard() {
-    // Render the unit-circle board, labels, and angle or coordinate grid.
+    // Render the active World board. Each world index below has its own field layout.
     const { world: w, stage: s } = state;
     let b = "";
+
+    // World 2/4: quadrant and sign background.
     if ((w === 1 || w === 3) && s === 0)
       b =
         '<g opacity=".18" pointer-events="none"><path d="M450 350L670 350A220 220 0 0 0 450 130Z" fill="#e6ba85"/><path d="M450 350L450 130A220 220 0 0 0 230 350Z" fill="#bad8e6"/><path d="M450 350L230 350A220 220 0 0 0 450 570Z" fill="#d4bddb"/><path d="M450 350L450 570A220 220 0 0 0 670 350Z" fill="#eadb91"/></g>';
     if (w !== 4) {
       b +=
         '<circle cx="450" cy="350" r="220" fill="none" stroke="#89a46a" stroke-width="2" stroke-dasharray="5 8" opacity=".5"/><path d="M178 350H722M450 82V618" stroke="#88a66d" stroke-width="1.8" opacity=".55"/><path d="m715 344 8 6-8 6m-271-268 6-8 6 8" fill="none" stroke="#7c9c64" stroke-width="2"/><text x="732" y="355" class="axis-text">x</text><text x="445" y="73" class="axis-text">y</text>';
+      // World 4: safe area and sign guide.
       if (w === 3)
         b +=
           '<g aria-label="Safe area"><circle cx="450" cy="350" r="65" fill="#f5ecd5" fill-opacity=".68" stroke="#ba9475" stroke-width="2" stroke-dasharray="5 5"/><text x="450" y="415" text-anchor="middle" fill="#795a48" style="font:600 13px Outfit,sans-serif;letter-spacing:1px">SAFE AREA</text></g>';
+      // World 3: COS/SIN coordinate grid.
       if (w === 2)
         for (let n = -2; n <= 2; n++) {
           const d = n * 110;
@@ -729,6 +775,7 @@
           const p = qpos(n);
           if (s === 0)
             b += `<text x="${p.x}" y="${p.y - 48}" text-anchor="middle" class="q-label">Q${roman[n]}</text><text x="${p.x}" y="${p.y - 27}" text-anchor="middle" class="q-sub">${n === 1 || n === 4 ? "x +" : "x −"} · ${n <= 2 ? "y +" : "y −"}</text>`;
+          // World 1: angle ring and bush targets.
         }
       if (w === 0) {
         for (const a of ANGLES) {
@@ -740,6 +787,7 @@
           '<circle cx="450" cy="350" r="55" fill="#e5edc8" stroke="#b9ce96" stroke-dasharray="3 6"/><path d="M507 350A57 57 0 0 0 499 321" fill="none" stroke="#a4b887" stroke-width="2"/><text x="505" y="328" class="axis-text">θ</text>';
       }
     } else {
+      // World 5: exact-value answer field.
       b +=
         '<path d="M190 493Q450 600 710 493" fill="none" stroke="#a8bc7e" stroke-width="2" stroke-dasharray="5 8"/><text x="450" y="613" text-anchor="middle" class="axis-text" style="font-size:13px;letter-spacing:2px">THE ANSWER IS ON THE MOVE</text>';
     }
@@ -772,6 +820,8 @@
     // Place mice, boxes, targets, answer mice, and obstacles in the board.
     const { world: w, stage: s, question: z } = state;
     let e = "";
+
+    // World 2/4: quadrant targets and sign/clue boxes.
     if (w === 1 || w === 3) {
       for (let n = 1; n <= 4; n++) {
         if (w === 3 && s === 1) continue;
@@ -785,16 +835,21 @@
         e += `<use href="#mouse" transform="translate(${p.x} ${p.y})"/>`;
       }
     }
+
+    // World 3: moving mouse and patrolling dog.
     if (w === 2) {
       e += `<g id="moving-mouse"><use href="#mouse"/><rect x="-30" y="-52" width="60" height="22" rx="7" class="speech"/><text y="-37" text-anchor="middle" class="axis-text">${z.a}°</text></g>`;
       if (s === 2) e += dog();
     }
+    // World 4: patrolling dog for sign Challenge.
     if ((w === 1 || w === 3) && s === 2) e += dog();
+    // World 1: moving bees for Challenge and Rush.
     if (w === 0 && (s === 2 || state.mode === "rush")) {
       const count = 3;
       for (let i = 0; i < count; i++)
         e += `<g id="${count === 1 ? "bee" : "bee-" + i}"><ellipse rx="17" ry="12" fill="#edc576"/><path d="M-5-11v22m10-22v22" stroke="#6c6754" stroke-width="5"/><ellipse cx="-6" cy="-15" rx="8" ry="11" fill="#fbf5dcbb" transform="rotate(-25)"/><ellipse cx="7" cy="-15" rx="8" ry="11" fill="#fbf5dcbb" transform="rotate(25)"/><circle cx="12" cy="-3" r="2" fill="#534f3d"/></g>`;
     }
+    // World 5: exact-value answer mice.
     if (w === 4) {
       z.options.forEach((v, i) => {
         e += `<g id="value-${i}" class="value-mouse" data-answer="${i}" role="button" tabindex="0" aria-label="Catch answer ${v}"><use href="#mouse" transform="scale(1.3)"/></g>`;
@@ -859,12 +914,13 @@
       s = state.stage;
     if (w === 0 && (s === 2 || state.mode === "rush")) {
       const rush = state.mode === "rush",
-        count = 3;
+        count = 3,
+        available = ANGLES.filter((a) => a !== state.question?.a);
       state.bees = Array.from(
         { length: count },
         (_, i) =>
-          ANGLES[
-            (Math.floor(t / (rush ? 0.5 : 5)) + 10 + i * 5) % ANGLES.length
+          available[
+            (Math.floor(t / (rush ? 0.5 : 5)) + 10 + i * 5) % available.length
           ],
       );
       state.bee = state.bees[0];
@@ -928,15 +984,92 @@
   }
   function dogPosition() {
     if (state.world === 2) {
-      const t = state.elapsed,
-        step = Math.floor(t / 4.5),
-        blend = Math.min(1, (t % 4.5) / 1.2),
-        old = pos(state.question.a + Math.max(0, step - 1) * 90, 155),
-        next = pos(state.question.a + step * 90, 155);
-      return {
-        x: old.x + (next.x - old.x) * blend + Math.sin(t * 1.2) * 38,
-        y: old.y + (next.y - old.y) * blend + Math.cos(t * 1.2) * 38,
-      };
+      // Start and patrol inside the moving mouse's quadrant.
+      // If that area overlaps the mouse, fall back to another quadrant.
+      const t = state.elapsed;
+      const targetAngle = state.question.activeAngle ?? state.question.a;
+      const normalizedAngle = (targetAngle + 360) % 360;
+      const quadrant =
+        normalizedAngle < 90
+          ? 1
+          : normalizedAngle < 180
+            ? 2
+            : normalizedAngle < 270
+              ? 3
+              : 4;
+      const quadrantCenters = [0, 45, 135, 225, 315];
+      const quadrantCenter = quadrantCenters[quadrant];
+      const patrolAngle = quadrantCenter + Math.sin(t * 0.35) * 38;
+      const patrolRadius = 180 + Math.sin(t * 0.55) * 35;
+      let patrol = pos(patrolAngle, patrolRadius);
+
+      // Move to a different location if the dog overlaps the mouse's approach area.
+      if (dist(patrol, state.target) < 110) {
+        const alternatives = [
+          pos(quadrantCenter - 50, 150),
+          pos(quadrantCenter + 50, 150),
+          pos(quadrantCenter - 30, 215),
+          pos(quadrantCenter + 30, 215),
+          pos(quadrantCenter, 125),
+        ].filter((candidate) => dist(candidate, state.target) >= 110);
+
+        if (alternatives.length) {
+          patrol = alternatives.reduce((best, candidate) =>
+            dist(candidate, state.target) > dist(best, state.target)
+              ? candidate
+              : best,
+          );
+        } else {
+          const fallbackCenters = [45, 135, 225, 315].filter(
+            (center) =>
+              (center === 45
+                ? 1
+                : center === 135
+                  ? 2
+                  : center === 225
+                    ? 3
+                    : 4) !== quadrant,
+          );
+          patrol = fallbackCenters
+            .map((center) => pos(center, 190))
+            .reduce((best, candidate) =>
+              dist(candidate, state.target) > dist(best, state.target)
+                ? candidate
+                : best,
+            );
+        }
+      }
+
+      // Never let the dog enter the origin/safe area around the cat.
+      const origin = { x: 450, y: 350 };
+      if (dist(patrol, origin) < 145) {
+        const originSafeCandidates = [
+          pos(quadrantCenter - 40, 220),
+          pos(quadrantCenter + 40, 220),
+          pos(quadrantCenter - 65, 175),
+          pos(quadrantCenter + 65, 175),
+          pos(quadrantCenter, 220),
+        ].filter(
+          (candidate) =>
+            dist(candidate, origin) >= 145 &&
+            dist(candidate, state.target) >= 90,
+        );
+        if (originSafeCandidates.length) {
+          patrol = originSafeCandidates.reduce((best, candidate) =>
+            dist(candidate, state.target) > dist(best, state.target)
+              ? candidate
+              : best,
+          );
+        } else {
+          patrol = pos(quadrantCenter, 220);
+        }
+      }
+
+      // Keep patrol sprites away from the top/bottom SVG origin edges.
+      patrol.x = Math.max(150, Math.min(750, patrol.x));
+      patrol.y = Math.max(110, Math.min(590, patrol.y));
+
+      return patrol;
     }
     return {
       x: 450 + Math.sin(state.elapsed * 0.7) * 205,
@@ -1209,6 +1342,8 @@
     // Validate the player's current selection and complete or reject the catch.
     if (!state.active || state.busy || $("modal").open) return;
     const { world: w, stage: s, question: z } = state;
+
+    // World 1: angle bush selection.
     if (w === 0) {
       if (state.selected === null) {
         toast("Choose a bush around the circle first.");
@@ -1230,6 +1365,8 @@
       success(pos(z.a));
       return;
     }
+
+    // World 5: exact trigonometric answer mouse selection.
     if (w === 4) {
       if (state.selected === null) {
         toast("Aim at an answer mouse first.");
@@ -1246,6 +1383,8 @@
       success(valuePosition(state.selected));
       return;
     }
+
+    // World 3: COS/SIN movement to the moving target.
     if (w === 2) {
       if (!state.axis) {
         toast("Choose COS or SIN before moving.");
@@ -1263,6 +1402,8 @@
       success(state.target);
       return;
     }
+
+    // Worlds 2 and 4: quadrant or sign-based box/mouse selection.
     const nearest = [1, 2, 3, 4]
       .map((n) => ({ n, p: qpos(n) }))
       .sort((a, b) => dist(a.p, state.cat) - dist(b.p, state.cat))[0];
@@ -1430,6 +1571,8 @@
     const w = state.world,
       s = state.stage;
     let steps = [];
+
+    // ==================== WORLD 1: ANGLE FOREST GUIDE ====================
     if (w === 0)
       steps = [
         "Read the mission. All angles start at <strong>0° on the right</strong> and grow counterclockwise.",
@@ -1438,6 +1581,8 @@
           ? "Three bees change bushes every <strong>5 seconds</strong>. If a bee blocks your target, wait before catching."
           : `Find ${missionCount()} mice to complete the level. Learn levels let you try again without losing hearts.`,
       ];
+
+    // ==================== WORLDS 2/4: QUADRANT/SIGN GUIDE ====================
     if (w === 1 || w === 3)
       steps = [
         "Use <strong>WASD / arrow keys</strong> to walk anywhere in the field. You can also click a mouse or box to walk toward it.",
@@ -1448,6 +1593,8 @@
             ? "Drag + or − to <strong>COS and SIN</strong>, or click each sign. Once both are selected, the answer is checked automatically."
             : "Quadrants go counterclockwise from the upper right: <strong>I, II, III, IV</strong>. Axes are not quadrants.",
       ];
+
+    // ==================== WORLD 3: COORDINATE VALLEY GUIDE ====================
     if (w === 2)
       steps = [
         "The cat starts facing forward. Choose <strong>COS (C)</strong> for horizontal movement or <strong>SIN (V)</strong> for vertical movement.",
@@ -1457,6 +1604,8 @@
             ? " The mouse moves every <strong>4–5 seconds</strong> and flashes before moving. Avoid the dog."
             : ""),
       ];
+
+    // ==================== WORLD 5: TRIG TREASURE GUIDE ====================
     if (w === 4)
       steps = [
         "Work out the exact value of the function in your mission." +

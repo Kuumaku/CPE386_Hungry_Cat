@@ -1,0 +1,263 @@
+================================================================================
+HUNGRY CAT (TRIGO CAT: MOUSE HUNT) - PERSON 1 IMPLEMENTATION PLAN
+================================================================================
+Scope: Worlds 1-3 (Angles, Quadrants, Coordinates)
+Reference Documents: Game_Design.pdf, person1_tasks.txt, game.js, index.html
+Target Files: dist/game.js (primary), dist/index.html, dist/style.css
+
+--------------------------------------------------------------------------------
+EXECUTIVE SUMMARY & EXECUTION ORDER
+--------------------------------------------------------------------------------
+Phase 1: Foundation (CRITICAL PREREQUISITE)
+  - Step 1: Change Story Mission Count from 5 to 3
+
+Phase 2: World 1 — Angle Forest (Tasks 2, 3, 4)
+  - Step 2: Replace Learn Level 1 missions with design questions (30°, 90°, 150°)
+  - Step 3: Verify Practice Level 2 calculations & target angles
+  - Step 4: Verify Challenge Level 3 routes, obstacle bees & hidden labels
+
+Phase 3: World 2 — Quadrant Adventure (Tasks 5, 6, 7, 8)
+  - Step 5: Replace Learn Level 4 missions with QI, QIII, QIV
+  - Step 6: Replace Practice Level 5 missions with 150°, 300°, 225°
+  - Step 7: Support axis paths (X-axis, Y-axis) in Challenge Level 6
+  - Step 8: Verify quadrant movement, box reachability & labels visibility
+
+Phase 4: World 3 — Coordinate Valley (Tasks 9, 10)
+  - Step 9: Reinforce x = cos θ and y = sin θ in Learn Level 7 & Practice Level 8
+  - Step 10: Finalize Challenge Level 9 (moving mouse, patrolling dog, safe return)
+
+Phase 5: Shared Mechanics & Progression Verification (Tasks 11, 12)
+  - Step 11: Verify hearts rules (Learn safe; Practice/Challenge lose 1) and scoring
+  - Step 12: Verify world unlock chain (3 levels per world) & replay separation
+
+Phase 6: Regression Testing Matrix (Task 13)
+  - Step 13: Execute full regression test matrix on desktop and mobile
+
+================================================================================
+PHASE 1: FOUNDATION (DO THIS FIRST)
+================================================================================
+[x] Task 1: Change Story Mission Count from 5 to 3
+    - Why first:
+      All downstream UI (dots, mission count "01/03"), completion triggers
+      (state.mission >= missionCount()), unlocking, and question generation
+      depend directly on missionCount() returning 3.
+    - Code Location:
+      dist/game.js (around line 8)
+    - Action:
+      Change:
+        const MISSION_COUNTS = [[5,5,5],[5,5,5],[5,5,5],[5,5,5],[5,5,5]];
+      To:
+        const MISSION_COUNTS = [[3,3,3],[3,3,3],[3,3,3],[3,3,3],[3,3,3]];
+    - Important Constraint:
+      Endless Mode (Mouse Rush) uses rushQuestion() and must remain repeat/randomized;
+      it must NOT inherit the 3-mission limit.
+    - Acceptance:
+      Each of the 9 Story levels for Worlds 1-3 completes and triggers victory
+      after exactly 3 caught mice.
+
+================================================================================
+PHASE 2: WORLD 1 — ANGLE FOREST (UNDERSTANDING ANGLES 0° - 360°)
+================================================================================
+[x] Task 2: Replace World 1 Learn missions with Design Questions
+    - Current issue:
+      makeQuestion(0, 0) cycles through [0, 30, 45, 60, 90, 150]. With 3 missions,
+      the player gets 0°, 30°, 45°, which does not match the design.
+    - Code Location:
+      dist/game.js -> makeQuestion(w, stage, index) where w===0 && stage===0
+    - Action:
+      Implement the exact 3 design questions:
+        Mission 1: Find 30°
+          -> a = 30, prompt: "Find <strong>30°</strong>. Which bush should we search?"
+        Mission 2: Find 90°
+          -> a = 90, prompt: "Find <strong>90°</strong>. Which bush should we search?"
+        Mission 3: Find 150°
+          -> a = 150, prompt: "Find <strong>150°</strong>. Which bush should we search?"
+      Keep all standard angle bushes (0°, 30°, 45°, 60°, 90°, 150°, etc.) visible
+      in drawBoard() so the user can select between them.
+    - Acceptance:
+      Prompts and target angles strictly match 30°, 90°, and 150°.
+
+[x] Task 3: Verify World 1 Practice Mission Answers
+    - Design Specification:
+      First-play combos:
+        Mission 1: Go 90° counterclockwise from 30° -> Target: 120°
+        Mission 2: Go 30° clockwise from 90° -> Target: 60°
+        Mission 3: Go 90° clockwise from 0° -> Target: 270°
+    - Code Location:
+      dist/game.js -> makeQuestion(w===0, stage===1) and buildQuestions(0, 1, 3)
+    - Action:
+      Verify combo array [[30, 90, 1], [90, 30, -1], [0, 90, -1]] evaluates correctly:
+        (start + turn * dir + 360) % 360.
+      Ensure direction text displayed ("counterclockwise" vs "clockwise") exactly
+      matches dir === 1 (+turn) and dir === -1 (-turn).
+      Replay questions may retain randomized combos.
+    - Acceptance:
+      Prompts and visual targets for first-play match 120°, 60°, and 270°.
+
+[x] Task 4: Verify World 1 Challenge Route and Obstacle Behavior
+    - Design Specification:
+      First-play routes:
+        Mission 1: Start at 30°, rotate 90° CCW -> Target: 120°
+        Mission 2: Start at 90°, rotate 30° CW -> Target: 60°
+        Mission 3: Start at 0°, rotate 90° CW -> Target: 270°
+    - Code Location:
+      dist/game.js -> makeQuestion(w===0, stage===2), drawBoard(), catchMouse()
+    - Action:
+      Verify routes array uses the 3 design sequences on first play.
+      Verify angle labels on bushes remain hidden during Challenge mode.
+      Verify moving bees change bushes every 5 seconds and cannot share the
+      same bush as the correct target mouse.
+      Verify selecting a bush occupied by a bee triggers an obstacle penalty.
+    - Acceptance:
+      Challenge completes after 3 missions; final angle targets match design;
+      no bee is ever placed on the target bush.
+
+================================================================================
+PHASE 3: WORLD 2 — QUADRANT ADVENTURE (FOUR QUADRANTS)
+================================================================================
+[ ] Task 5: Replace World 2 Learn Missions with QI, QIII, QIV
+    - Current issue:
+      stage===0 currently uses angles [45, 135, 225, 315, 60], generating missions
+      based on angle signs rather than the design sequence.
+    - Code Location:
+      dist/game.js -> makeQuestion(w===1, stage===0)
+    - Action:
+      Implement the exact 3 missions from Game_Design.pdf:
+        Mission 1: Which quadrant has x > 0 and y > 0? -> Answer: QI
+        Mission 2: Which quadrant has (-, -) / x < 0 and y < 0? -> Answer: QIII
+        Mission 3: Which quadrant has x > 0 and y < 0? -> Answer: QIV
+    - Acceptance:
+      Prompts and target quadrants match QI, QIII, and QIV.
+
+[ ] Task 6: Replace World 2 Practice Angle Missions
+    - Current issue:
+      stage===1 currently defaults to [150°, 225°, 330°, 45°, 135°].
+    - Design Specification:
+      Mission 1: Which quadrant contains 150°? -> Answer: QII
+      Mission 2: Which quadrant contains 300°? -> Answer: QIV
+      Mission 3: Which quadrant contains 225°? -> Answer: QIII
+    - Code Location:
+      dist/game.js -> makeQuestion(w===1, stage===1) and buildQuestions(1, 1, 3)
+    - Action:
+      Update initial non-replay question list to [150, 300, 225].
+      Preserve randomized replay for subsequent runs.
+    - Acceptance:
+      The 3 first-play questions strictly match 150° (QII), 300° (QIV), and 225° (QIII).
+
+[ ] Task 7: Add Missing World 2 Challenge Axis-Path Missions
+    - Design Specification:
+      Paths can pass through both quadrants and axes:
+        Mission 1: Path for 135° -> 315° -> 225°
+                   -> Answer: QII -> QIV -> QIII
+        Mission 2: Path for 45° -> 180° -> 270°
+                   -> Answer: QI -> X-axis -> Y-axis
+        Mission 3: Path for 300° -> 150° -> 45°
+                   -> Answer: QIV -> QII -> QI
+    - Code Location:
+      dist/game.js -> makeQuestion(w===1, stage===2), renderClues(), catchMouse()
+    - Action:
+      Update sequence generator to allow axis targets (180° = X-axis, 270° = Y-axis).
+      In drawEntities() and catchMouse(), handle interaction with axis points
+      without misclassifying an axis as a quadrant (q(180) === 0, q(270) === 0).
+    - Acceptance:
+      The second mission requires visiting the X-axis and Y-axis; axes are
+      never identified as QI-QIV.
+
+[ ] Task 8: Complete World 2 Game Behavior Gaps
+    - Action:
+      Verify cat movement across 4 quadrants using WASD/arrows or click-to-move.
+      Verify that clicking an empty box in Practice/Challenge deducts 1 heart.
+      Verify that in Learn Level 4, QI-QIV labels and (+/-) sign labels remain visible.
+      Ensure boxes cannot be both a false target and a valid answer.
+    - Acceptance:
+      All 4 quadrant boxes are reachable; wrong choices deduct hearts (except in Learn);
+      labels render properly.
+
+================================================================================
+PHASE 4: WORLD 3 — COORDINATE VALLEY (COSINE & SINE)
+================================================================================
+[ ] Task 9: Fix World 3 Coordinate Learning and Testing
+    - Code Location:
+      dist/game.js -> makeQuestion(w===2, stage===0 and stage===1), selectAxis()
+    - Action:
+      Level 7 (Learn):
+        Make prompts explicitly teach that X = cos θ and Y = sin θ.
+        When moving horizontally, require COS (key C).
+        When moving vertically, require SIN (key V).
+      Level 8 (Practice):
+        Require player to navigate to target coordinates using both COS and SIN.
+        Verify that axis locking (C/V) prevents diagonal movement.
+    - Acceptance:
+      Gameplay and prompts reinforce X = cos θ (horizontal) and Y = sin θ (vertical).
+
+[ ] Task 10: Complete World 3 Challenge Behavior
+    - Code Location:
+      dist/game.js -> animateEntities(), tick(), catchMouse()
+    - Action:
+      Verify mouse relocation behavior (moves every 4-5 seconds with pulse indicator).
+      Verify patrolling dog obstacle:
+        - When dog hits cat, or cat misses a pounce: deduct 1 heart and return cat
+          to the Safe Area at center (450, 350).
+      Verify that tan θ is NOT present in World 3 (reserved for World 5).
+    - Acceptance:
+      Level 9 can be beaten with 3 hearts and 3 caught mice; dog collision
+      returns cat to center safe zone.
+
+================================================================================
+PHASE 5: SHARED SYSTEMS & PROGRESSION VERIFICATION
+================================================================================
+[ ] Task 11: Verify Shared Mechanics
+    - Hearts Rules:
+      - Learn (stage 0): wrong() does NOT decrement hearts; player can retry.
+      - Practice (stage 1) & Challenge (stage 2): wrong() decrements 1 heart.
+      - 0 hearts triggers showResult(false) (Game Over).
+    - Timed Challenges:
+      - Challenge levels have countdown timer (CHALLENGE_SECONDS).
+      - success() adds +5 seconds upon each catch.
+    - Scoring System:
+      - Base catch: +10 pts
+      - First attempt: +5 pts
+      - No hint used: +5 pts
+      - 3-consecutive combo: +5 bonus pts
+    - Acceptance:
+      Mechanics verified across all 3 missions of Worlds 1-3.
+
+[ ] Task 12: Verify Replay and Unlock Flow
+    - Level Unlocking:
+      - Completing Levels 1-3 unlocks World 2 (Level 4).
+      - Completing Levels 4-6 unlocks World 3 (Level 7).
+      - Replaying earlier levels updates stars and best score without breaking unlocked status.
+    - Free Explore mode in World Map remains separate from standard Story progression.
+    - Acceptance:
+      Sequential unlocking works accurately with 3 missions per level.
+
+================================================================================
+PHASE 6: REGRESSION TEST MATRIX
+================================================================================
+[ ] Task 13: Regression Test Execution Matrix
+    Execute the following test passes and document evidence:
+
+    Level               Mission Count   Target Questions / Mechanics       Pass/Fail
+    --------------------------------------------------------------------------------
+    W1L1 (Learn)        3               30°, 90°, 150° (0 hearts lost)     [ ]
+    W1L2 (Practice)     3               120°, 60°, 270° (CW/CCW checks)    [ ]
+    W1L3 (Challenge)    3               Routes + Bees + Timer (+5s)        [ ]
+    W2L1 (Learn)        3               QI, QIII, QIV sign pairs           [ ]
+    W2L2 (Practice)     3               150°(QII), 300°(QIV), 225°(QIII)   [ ]
+    W2L3 (Challenge)    3               Quad + X-axis + Y-axis paths       [ ]
+    W3L1 (Learn)        3               X=cos θ, Y=sin θ axis choice       [ ]
+    W3L2 (Practice)     3               2-axis navigation (C & V keys)     [ ]
+    W3L3 (Challenge)    3               Moving mouse + Patrolling dog      [ ]
+
+    Input Controls Verification:
+    - Mouse clicks / Pointer events                                        [ ]
+    - Touch tap & drag on mobile                                           [ ]
+    - WASD and Arrow Keys                                                  [ ]
+    - Axis hotkeys: C (COS) and V (SIN)                                    [ ]
+    - Action keys: Enter and Space                                         [ ]
+
+    Responsive Layout Verification:
+    - Desktop (1200px+)                                                    [ ]
+    - Tablet (730px - 950px)                                               [ ]
+    - Mobile (360px - 600px)                                               [ ]
+================================================================================
