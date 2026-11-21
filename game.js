@@ -119,6 +119,7 @@
   };
   let runId = 0,
     inHome = true;
+  let completedLevelToReset = null;
   let explore = false,
     sound = false,
     audio = null,
@@ -434,8 +435,8 @@
         a,
         prompt:
           stage === 0
-            ? `The mouse is on the <strong>${a % 180 === 0 ? "horizontal" : "vertical"} axis</strong>. Choose COS or SIN, then move to catch it.`
-            : `Reach the mouse at <strong>${a}°</strong>. Use COS for x and SIN for y.${stage === 2 ? "<br>Watch for the patrolling dog!" : ""}`,
+            ? `The mouse is on the <strong>${a % 180 === 0 ? "horizontal" : "vertical"} axis</strong>. On the unit circle, <strong>x = cos θ</strong> and <strong>y = sin θ</strong>. Choose ${a % 180 === 0 ? "<strong>COS (C)</strong> to move horizontally" : "<strong>SIN (V)</strong> to move vertically"}, then catch it.`
+            : `Reach the mouse at <strong>${a}°</strong>. Use <strong>COS (C)</strong> for horizontal movement and x = cos θ; use <strong>SIN (V)</strong> for vertical movement and y = sin θ.${stage === 2 ? "<br>Watch for the patrolling dog!" : ""}`,
       };
     }
 
@@ -568,6 +569,7 @@
   }
   function start(world, stage, mode = "story") {
     // Reset a level/run and initialize its UI and first mission.
+    completedLevelToReset = null;
     runId++;
     if ($("modal").open) $("modal").close();
     keys.clear();
@@ -1305,20 +1307,19 @@
   }
   function selectAxis(axis) {
     if (state.busy || !state.active) return;
+    const expected = state.question.a % 180 === 0 ? "cos" : "sin";
+    if (state.world === 2 && state.stage === 0 && axis !== expected) {
+      wrong(
+        `Choose ${expected.toUpperCase()} (${expected === "cos" ? "C" : "V"}) for this ${expected === "cos" ? "horizontal" : "vertical"} mouse. COS moves horizontally; SIN moves vertically.`,
+      );
+      return;
+    }
     state.axis = axis;
     state.moveTo = null;
     updateCat();
     document
       .querySelectorAll("[data-axis]")
       .forEach((b) => b.classList.toggle("selected", b.dataset.axis === axis));
-    const expected = state.question.a % 180 === 0 ? "cos" : "sin";
-    if (state.world === 2 && state.stage === 0 && axis !== expected) {
-      state.axisLockUntil = state.elapsed + 1;
-      toast(
-        "That axis does not follow the mouse. COS is horizontal; SIN is vertical.",
-      );
-      return;
-    }
     state.axisLockUntil = 0;
     toast(
       axis === "cos"
@@ -1336,17 +1337,12 @@
     state.attempts++;
     state.streak = 0;
     saved.attempts++;
-    if (state.stage !== 0 || state.mode === "rush") state.hearts--;
+    state.hearts--;
     save();
     updateHUD();
     beep(false);
-    toast(
-      message +
-        (state.stage === 0 && state.mode !== "rush"
-          ? " Keep trying — no hearts lost."
-          : ""),
-      true,
-    );
+    toast(message, true);
+    if (state.stage === 0 && state.mode !== "rush") hint(true);
     if (state.hearts <= 0) {
       state.active = false;
       (() => {
@@ -1559,10 +1555,10 @@
       } else newMission();
     }, 1000);
   }
-  function hint() {
+  function hint(forceShow = false) {
     // Show a world-specific hint and mark that this mission used a hint.
     if (state.hinted) {
-      $("hint-content").hidden = !$("hint-content").hidden;
+      $("hint-content").hidden = forceShow ? false : !$("hint-content").hidden;
       return;
     }
     state.hinted = true;
@@ -1727,6 +1723,10 @@
     );
   }
   function showResult(win) {
+    completedLevelToReset =
+      win && state.mode === "story"
+        ? { world: state.world, stage: state.stage, mode: state.mode }
+        : null;
     if (
       win &&
       state.mode === "story" &&
@@ -1751,6 +1751,7 @@
         `<div class="big-stars">${win ? "★".repeat(state.hearts) + "☆".repeat(3 - state.hearts) : "♡"}</div><h2 class="modal-title">${win ? "You’ve earned your whiskers." : "Every explorer tries again."}</h2><p class="modal-copy">${win ? (state.world === 4 && state.stage === 2 ? "All five worlds explored! Take your post-test in the learning journal to see how far you’ve come." : `${missionCount()} clever ${missionCount() === 1 ? "mouse" : "mice"} found. A little more math discovered.`) : state.mode === "rush" ? `You caught ${state.mission} mice. Your best Mouse Rush score is ${saved.rushBest}.` : state.failureReason === "time" ? "Time is up. Try the level again and catch mice to earn extra time." : "Your hearts ran out, but your curiosity doesn’t have to. Try the level again."}</p><div class="result-stats"><span>LEVEL SCORE<strong>${state.score}</strong></span><span>MICE CAUGHT<strong>${state.mission}</strong></span><span>FISH COINS<strong>${saved.coins}</strong></span></div><div class="modal-actions"><button class="catch-button" id="result-next">${win ? "Keep exploring" : "Try again"} <span>✦</span></button><button class="secondary" id="result-map">World map</button></div>`,
     );
     $("result-next").onclick = () => {
+      completedLevelToReset = null;
       if (!win) {
         start(state.world, state.stage, state.mode);
         return;
@@ -1762,7 +1763,10 @@
       }
       start(Math.floor(level / 3), level % 3);
     };
-    $("result-map").onclick = showMap;
+    $("result-map").onclick = () => {
+      completedLevelToReset = null;
+      showMap();
+    };
   }
   function showJournal() {
     const accuracy = saved.total
@@ -1963,6 +1967,7 @@
       showAssessmentIntro("post");
       return;
     }
+    completedLevelToReset = null;
     quiz = {
       type,
       index: 0,
@@ -2296,9 +2301,15 @@
   window.addEventListener("keyup", (e) => keys.delete(gameKey(e)));
   window.addEventListener("blur", () => keys.clear());
   document.addEventListener("visibilitychange", () => keys.clear());
-  $("modal").addEventListener("close", () => keys.clear());
+  $("modal").addEventListener("close", () => {
+    keys.clear();
+    if (!completedLevelToReset) return;
+    const completedLevel = completedLevelToReset;
+    completedLevelToReset = null;
+    start(completedLevel.world, completedLevel.stage, completedLevel.mode);
+  });
   $("catch").onclick = catchMouse;
-  $("hint").onclick = hint;
+  $("hint").onclick = () => hint();
   $("help").onclick = showGuide;
   $("map-button").onclick = showMap;
   $("journal").onclick = $("avatar").onclick = showJournal;

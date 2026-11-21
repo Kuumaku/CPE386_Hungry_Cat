@@ -30,7 +30,7 @@ TASKS
     - Verify each bee position is unavailable as an answer and that selected bees produce an obstacle penalty.
     - Acceptance: the three-mission Challenge produces the correct final angle and no bee is also the correct mouse.
 
-[ ] 5. Replace World 2 Learn missions with QI/QIII/QIV
+[x] 5. Replace World 2 Learn missions with QI/QIII/QIV
     - stage=0 currently uses [45°, 135°, 225°, 315°, 60°].
     - This means the first mission asks QI? after count is 3, but there is no mission for the design’s exact sign-pair sequence.
     - Implement these three missions:
@@ -39,38 +39,38 @@ TASKS
       3. x > 0 and y < 0 -> QIV
     - Acceptance: the mission prompts and selected quadrant IDs match QI, QIII, and QIV.
 
-[ ] 6. Replace World 2 Practice angle missions
+[x] 6. Replace World 2 Practice angle missions
     - stage=1 currently uses [150°, 225°, 330°, 45°, 135°] on first play.
     - The design specifies 150° -> QII, 300° -> QIV, and 225° -> QIII.
     - Implement those exact three missions before replay randomization.
     - Acceptance: the map, hover labels, and correct answer for each of these three angles are consistent.
 
-[ ] 7. Add the missing World 2 Challenge axis-path missions
+[x] 7. Add the missing World 2 Challenge axis-path missions
     - World 2 Challenge currently randomizes three angle-only paths containing 45°, 135°, 225°, and 315°.
     - The design requires paths that can include an axis: 45° -> 180° -> 270° -> QI -> x-axis -> y-axis.
     - Build ordered clue sequences that include both quadrant and axis outcomes.
     - Acceptance: the Challenge identifies each 45°/180°/270° step correctly and never reports an axis as QI/QII/QIII/QIV.
 
-[ ] 8. Complete World 2 game behavior gaps
+[x] 8. Complete World 2 game behavior gaps
     - Verify cat movement is in a 4-quadrant field and all 4 quadrant targets are reachable.
     - Verify wrong quadrant/box searches lose or penalize an attempt according to the hearts rule.
     - Verify that QI-QIV labels and x/y sign labels remain visible in the Learn level.
     - Acceptance: no answer box is both a false target and a valid quadrant.
 
-[ ] 9. Fix World 3 coordinate learning and testing
+[x] 9. Fix World 3 coordinate learning and testing
     - stage=0 currently tells the player that a mouse is on a horizontal or vertical axis but does not explicitly present x = cos θ and y = sin θ as a mission answer.
     - Make each Learn mission demonstrate the coordinate relationship clearly.
     - stage=1 should ask the player to reach a stated angle and use COS/SIN, but should verify it is possible to derive the coordinate rather than merely walk to the angle.
     - Verify the C and V axis restrictions prevent diagonal movement.
     - Acceptance: missions visibly reinforce x = cos θ and y = sin θ.
 
-[ ] 10. Complete World 3 Challenge behavior
+[x] 10. Complete World 3 Challenge behavior
     - Verify the moving mouse, mouse position changes, and patrolling dog each affect gameplay as designed.
     - Verify the cat returns to the safe area after a dog hit or missed catch.
     - Verify tan θ is not introduced in World 3 unless it is part of the mission text; full tan implementation belongs to World 5.
     - Acceptance: the Challenge can be completed with 3 hearts and 3 missions, or the current 5-mission count is corrected first.
 
-[ ] 11. Verify shared mechanics that are already partially implemented
+[x] 11. Verify shared mechanics that are already partially implemented
     - Wrong answers call wrong(), but a wrong answer during Learn currently lowers no hearts.
     - Wrong answers during Practice/Challenge lower one heart and end the run at zero hearts.
     - Challenge levels have a shared timer; the game grants 5 seconds in success() for a correct catch.
@@ -83,7 +83,7 @@ TASKS
     - Free Explore in the world map must remain separate from normal progression.
     - Acceptance: 3 levels must be completed before the next world is unlocked.
 
-[ ] 13. Add a World 1-3 regression test matrix
+[x] 13. Add a World 1-3 regression test matrix
     - Test 3 mission counts for all 9 levels.
     - Test exact World 1 and World 2 design missions.
     - Test World 3 axis movement and dog behavior.

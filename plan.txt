@@ -115,7 +115,7 @@ PHASE 2: WORLD 1 — ANGLE FOREST (UNDERSTANDING ANGLES 0° - 360°)
 ================================================================================
 PHASE 3: WORLD 2 — QUADRANT ADVENTURE (FOUR QUADRANTS)
 ================================================================================
-[ ] Task 5: Replace World 2 Learn Missions with QI, QIII, QIV
+[x] Task 5: Replace World 2 Learn Missions with QI, QIII, QIV
     - Current issue:
       stage===0 currently uses angles [45, 135, 225, 315, 60], generating missions
       based on angle signs rather than the design sequence.
@@ -129,7 +129,7 @@ PHASE 3: WORLD 2 — QUADRANT ADVENTURE (FOUR QUADRANTS)
     - Acceptance:
       Prompts and target quadrants match QI, QIII, and QIV.
 
-[ ] Task 6: Replace World 2 Practice Angle Missions
+[x] Task 6: Replace World 2 Practice Angle Missions
     - Current issue:
       stage===1 currently defaults to [150°, 225°, 330°, 45°, 135°].
     - Design Specification:
@@ -144,7 +144,7 @@ PHASE 3: WORLD 2 — QUADRANT ADVENTURE (FOUR QUADRANTS)
     - Acceptance:
       The 3 first-play questions strictly match 150° (QII), 300° (QIV), and 225° (QIII).
 
-[ ] Task 7: Add Missing World 2 Challenge Axis-Path Missions
+[X] Task 7: Add Missing World 2 Challenge Axis-Path Missions
     - Design Specification:
       Paths can pass through both quadrants and axes:
         Mission 1: Path for 135° -> 315° -> 225°
@@ -163,7 +163,7 @@ PHASE 3: WORLD 2 — QUADRANT ADVENTURE (FOUR QUADRANTS)
       The second mission requires visiting the X-axis and Y-axis; axes are
       never identified as QI-QIV.
 
-[ ] Task 8: Complete World 2 Game Behavior Gaps
+[X] Task 8: Complete World 2 Game Behavior Gaps
     - Action:
       Verify cat movement across 4 quadrants using WASD/arrows or click-to-move.
       Verify that clicking an empty box in Practice/Challenge deducts 1 heart.
