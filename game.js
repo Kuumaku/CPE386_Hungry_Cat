@@ -15,6 +15,12 @@
     [3, 3, 3],
     [3, 3, 3],
   ];
+  const WORLD2_CHALLENGE_SEQUENCES = [
+    [135, 315, 225],
+    [45, 180, 270],
+    [300, 150, 45],
+  ];
+  const WORLD2_CHALLENGE_ANGLES = [45, 135, 225, 315, 0, 90, 180, 270];
   const missionCount = () => MISSION_COUNTS[state.world][state.stage];
   const isTimedChallenge = () => state.mode === "story" && state.stage === 2;
   const WORLDS = [
@@ -142,8 +148,12 @@
           : a > 270 && a < 360
             ? 4
             : 0;
+  const quadrantTarget = (a) =>
+    a % 180 === 0 ? "x-axis" : a % 90 === 0 ? "y-axis" : q(a);
   const roman = ["", "I", "II", "III", "IV"];
   const qpos = (n) => {
+    if (n === 5) return { x: 610, y: 350 };
+    if (n === 6) return { x: 450, y: 190 };
     const p = {
       x: 450 + (n === 1 || n === 4 ? 160 : -160),
       y: 350 + (n <= 2 ? -150 : 150),
@@ -166,6 +176,14 @@
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
+  }
+  function randomWorld2ChallengeSequence() {
+    const sequence = shuffle(WORLD2_CHALLENGE_ANGLES).slice(0, 3);
+    if (!sequence.some((a) => a % 90 === 0))
+      sequence[Math.floor(Math.random() * sequence.length)] = sample(
+        [0, 90, 180, 270].filter((a) => !sequence.includes(a)),
+      );
+    return sequence;
   }
   const exact = (n) => {
     if (Math.abs(n) < 0.0001) return "0";
@@ -318,16 +336,14 @@
       }
       if (stage === 2) {
         const routes = [
-            [0, 135, 90],
-            [90, 180, -45],
-            [270, 120, -90],
-            [180, -135, 30],
-            [30, 180, 120],
-          ],
-          [begin, first, second] = routes[index % 5];
+          [30, 90],
+          [90, -30],
+          [0, -90],
+        ];
+        const [begin, turn] = routes[index % routes.length];
         return {
-          a: (begin + first + second + 720) % 360,
-          prompt: `Start at <strong>${begin}°</strong>. Turn <strong>${Math.abs(first)}° ${first > 0 ? "counterclockwise" : "clockwise"}</strong>, then <strong>${Math.abs(second)}° ${second > 0 ? "counterclockwise" : "clockwise"}</strong>. Find the final angle and avoid all three bees.`,
+          a: (begin + turn + 360) % 360,
+          prompt: `Start at <strong>${begin}°</strong>. Rotate <strong>${Math.abs(turn)}° ${turn > 0 ? "counterclockwise" : "clockwise"}</strong>. Find the final angle and avoid the bee.`,
         };
       }
       const combos = replay
@@ -396,13 +412,17 @@
           ? [45, 135, 225, 315, 60][index % 5]
           : (choice.angle ??
             (replay ? sample(INNER) : [150, 225, 330, 45, 135][index % 5]));
+      let seq =
+        stage === 2
+          ? (choice.sequence ||
+            (w === 1
+              ? randomWorld2ChallengeSequence()
+              : shuffle([45, 135, 225, 315]).slice(0, 3)))
+          : null;
+      if (w === 1 && stage === 2) a = seq[seq.length - 1];
       const target = q(a),
         cos = target === 1 || target === 4 ? "+" : "−",
         sin = target <= 2 ? "+" : "−";
-      let seq =
-        stage === 2
-          ? choice.sequence || shuffle([45, 135, 225, 315]).slice(0, 3)
-          : null;
       return {
         a,
         q: target,
@@ -506,14 +526,27 @@
         [270, 30, -1],
       ]).map((combo) => ({ combo }));
 
-    // Worlds 2 and 4 replay: ordered three-clue sequences.
-    if ((w === 1 || w === 3) && stage === 2) {
-      const angles = [45, 135, 225, 315],
+    // World 2 first play follows the design's fixed clue paths.
+    if (w === 1 && stage === 2 && !replay)
+      choices = WORLD2_CHALLENGE_SEQUENCES.map((sequence) => ({ sequence }));
+
+    // World 2 replay and World 4: ordered three-clue sequences.
+    if (
+      ((w === 1 && replay) || w === 3) &&
+      stage === 2
+    ) {
+      const angles =
+          w === 1 ? WORLD2_CHALLENGE_ANGLES : [45, 135, 225, 315],
         sequences = [];
       for (const a of angles)
         for (const b of angles)
           for (const c of angles)
-            if (a !== b && a !== c && b !== c)
+            if (
+              a !== b &&
+              a !== c &&
+              b !== c &&
+              (w !== 1 || [a, b, c].some((angle) => angle % 90 === 0))
+            )
               sequences.push({ sequence: [a, b, c] });
       const deck = shuffle(sequences);
       while (choices.length < count && deck.length) {
@@ -762,6 +795,7 @@
     const z = state.question,
       a = z.seq[state.clue],
       n = q(a),
+      target = quadrantTarget(a),
       count = z.seq.length;
     $("clue-progress").innerHTML =
       `<div class="clue-pills">${Array.from({ length: count }, (_, i) => `<span class="${i < state.clue ? "passed" : i === state.clue ? "active" : ""}">${i < state.clue ? "✓" : "Clue " + (i + 1)}</span>`).join("")}</div>`;
@@ -772,7 +806,9 @@
           ? intro +
             `Find the mouse where <strong>x ${n === 1 || n === 4 ? "&gt;" : "&lt;"} 0</strong> and <strong>y ${n <= 2 ? "&gt;" : "&lt;"} 0</strong>.`
           : intro +
-            `Find the box in the quadrant containing <strong>${a}°</strong>.`;
+            (typeof target === "string"
+              ? `Find the <strong>${target}</strong> box for <strong>${a}°</strong>. An axis is not a quadrant.`
+              : `Find the box in the quadrant containing <strong>${a}°</strong>.`);
     } else {
       $("prompt").innerHTML =
         intro +
@@ -862,6 +898,15 @@
           kind = visibleMouse ? "mouse" : "box";
         e += `<g id="quadrant-${n}" class="field-entity" data-box="${n}" transform="translate(${p.x} ${p.y})" role="button" tabindex="0" aria-label="Walk to ${["", "upper right", "upper left", "lower left", "lower right"][n]} ${kind}"><use href="#${kind}"${visibleMouse ? ' transform="scale(1.25)"' : ""}/><text y="51" text-anchor="middle" class="q-sub">${s === 0 ? "Q" + roman[n] : "SEARCH"}</text></g>`;
       }
+      if (w === 1 && s === 2) {
+        for (const [n, label] of [
+          [5, "X-AXIS"],
+          [6, "Y-AXIS"],
+        ]) {
+          const p = qpos(n);
+          e += `<g id="axis-${label.toLowerCase()}" class="field-entity" data-box="${n}" transform="translate(${p.x} ${p.y})" role="button" tabindex="0" aria-label="Walk to the ${label} box"><use href="#box"/><text y="51" text-anchor="middle" class="q-sub">${label}</text></g>`;
+        }
+      }
       if (w === 3 && s === 1) {
         const p = pos(z.a);
         e += `<use href="#mouse" transform="translate(${p.x} ${p.y})"/>`;
@@ -877,7 +922,7 @@
     if ((w === 1 || w === 3) && s === 2) e += dog();
     // World 1: moving bees for Challenge and Rush.
     if (w === 0 && (s === 2 || state.mode === "rush")) {
-      const count = 3;
+      const count = state.mode === "rush" ? 3 : 1;
       for (let i = 0; i < count; i++)
         e += `<g id="${count === 1 ? "bee" : "bee-" + i}"><ellipse rx="17" ry="12" fill="#edc576"/><path d="M-5-11v22m10-22v22" stroke="#6c6754" stroke-width="5"/><ellipse cx="-6" cy="-15" rx="8" ry="11" fill="#fbf5dcbb" transform="rotate(-25)"/><ellipse cx="7" cy="-15" rx="8" ry="11" fill="#fbf5dcbb" transform="rotate(25)"/><circle cx="12" cy="-3" r="2" fill="#534f3d"/></g>`;
     }
@@ -946,7 +991,7 @@
       s = state.stage;
     if (w === 0 && (s === 2 || state.mode === "rush")) {
       const rush = state.mode === "rush",
-        count = 3,
+        count = rush ? 3 : 1,
         available = ANGLES.filter((a) => a !== state.question?.a);
       state.bees = Array.from(
         { length: count },
@@ -958,7 +1003,8 @@
       state.bee = state.bees[0];
       state.bees.forEach((a, i) => {
         const p = pos(a);
-        $("bee-" + i)?.setAttribute(
+        const bee = $(count === 1 ? "bee" : "bee-" + i);
+        bee?.setAttribute(
           "transform",
           `translate(${p.x} ${p.y - 25 + Math.sin(t * 5 + i) * 4})`,
         );
@@ -1430,7 +1476,8 @@
     }
 
     // Worlds 2 and 4: quadrant or sign-based box/mouse selection.
-    const nearest = [1, 2, 3, 4]
+    const boxIds = w === 1 && s === 2 ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4];
+    const nearest = boxIds
       .map((n) => ({ n, p: qpos(n) }))
       .sort((a, b) => dist(a.p, state.cat) - dist(b.p, state.cat))[0];
     if (dist(nearest.p, state.cat) > 66) {
@@ -1441,8 +1488,10 @@
       );
       return;
     }
-    const target = z.seq ? q(z.seq[state.clue]) : z.q;
-    if (nearest.n !== target) {
+    const target = z.seq ? quadrantTarget(z.seq[state.clue]) : z.q;
+    const selectedTarget =
+      nearest.n === 5 ? "x-axis" : nearest.n === 6 ? "y-axis" : nearest.n;
+    if (selectedTarget !== target) {
       if (w === 1 && s === 0) {
         const side = [
           "",
@@ -1453,6 +1502,12 @@
         ][target];
         wrong(
           `Not this mouse. Quadrant ${roman[target]} is in the ${side} area.`,
+        );
+      } else if (w === 1 && s === 2) {
+        wrong(
+          typeof target === "string"
+            ? `Not the ${target} box. An axis is not a quadrant.`
+            : "Not that quadrant box. Follow the angle clue.",
         );
       } else {
         wrong("An empty box! Check the clue and the quadrant’s signs.");
@@ -1614,7 +1669,9 @@
         "Use <strong>WASD / arrow keys</strong> to walk anywhere in the field. You can also click a mouse or box to walk toward it.",
         "Read the clue, walk close to the correct mouse or box, then press <strong>Enter</strong> or <strong>Catch</strong>.",
         s === 2
-          ? "Each mouse has <strong>three clues</strong>. Search one box per clue, in order. The mouse appears after the third. Avoid the patrolling dog."
+          ? w === 1
+            ? "Follow <strong>three angle clues</strong> in order. Search a quadrant box or the labeled X-axis/Y-axis box for each clue. Avoid the patrolling dog."
+            : "Each mouse has <strong>three clues</strong>. Search one box per clue, in order. The mouse appears after the third. Avoid the patrolling dog."
           : w === 3 && s === 1
             ? "Drag + or − to <strong>COS and SIN</strong>, or click each sign. Once both are selected, the answer is checked automatically."
             : "Quadrants go counterclockwise from the upper right: <strong>I, II, III, IV</strong>. Axes are not quadrants.",

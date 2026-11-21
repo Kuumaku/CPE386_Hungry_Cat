@@ -5,16 +5,14 @@ Scope is not World 4-5, assessments, skins, or badges.
 TASKS
 
 [x] 1. Change the Story Mission Count from 5 to 3
-    - game.js currently defines MISSION_COUNTS as [[5,5,5], ...].
-    - Set every World 1-3 Learn/Practice/Challenge level to 3 missions.
+    - Current: MISSION_COUNTS defines 3 missions for all five worlds and all three stages.
+    - World 1-3 mission counters, dots, and completion use missionCount().
     - Update mission counters and dots through the existing missionCount() and renderMission() flow.
     - Acceptance: each of the 9 levels assigned to Person 1 ends after exactly 3 Story missions.
     - Note: Endless Mode should remain repeat/randomized and must not inherit this 3-mission limit.
 
 [x] 2. Replace World 1 Learn missions with the design questions
-    - makeQuestion(world=0, stage=0) currently generates [0°, 30°, 45°, 60°, 90°, 150°] by index.
-    - With 3 missions, the current first three are 0°, 30°, and 45°, which do not match the design.
-    - Implement the three World 1 Learn missions explicitly: Find 30°, find 90°, and find 150°.
+    - Current: makeQuestion(world=0, stage=0) returns explicit missions for 30°, 90°, and 150°.
     - Keep all 0°, 30°, 45°, 60°, and 90° positions visible in the Learn level.
     - Acceptance: mission prompts and correct answers match 30°, 90°, and 150°.
 
@@ -25,31 +23,30 @@ TASKS
     - Acceptance: no shown turn can produce a visually incorrect target.
 
 [x] 4. Verify World 1 Challenge route and obstacle behavior
-    - The Challenge currently uses three two-turn routes, hidden angle labels, moving bees, and a whole-level timer.
-    - Preserve the design’s first three route types and hide labels while the Challenge is active.
-    - Verify each bee position is unavailable as an answer and that selected bees produce an obstacle penalty.
-    - Acceptance: the three-mission Challenge produces the correct final angle and no bee is also the correct mouse.
+    - Challenge routes now match the design: 30° + 90° CCW = 120°, 90° + 30° CW = 60°, and 0° + 90° CW = 270°.
+    - Angle labels stay hidden during Challenge; one bee moves every five seconds, as specified.
+    - Bee positions exclude the correct answer; selecting the bee still triggers the existing wrong-answer penalty.
+    - Acceptance: all three mission answers match the design and no bee occupies the correct mouse position.
 
 [x] 5. Replace World 2 Learn missions with QI/QIII/QIV
-    - stage=0 currently uses [45°, 135°, 225°, 315°, 60°].
-    - This means the first mission asks QI? after count is 3, but there is no mission for the design’s exact sign-pair sequence.
-    - Implement these three missions:
+    - Current stage=0 missions are:
       1. x > 0 and y > 0 -> QI
       2. x < 0 and y < 0 -> QIII
       3. x > 0 and y < 0 -> QIV
     - Acceptance: the mission prompts and selected quadrant IDs match QI, QIII, and QIV.
 
-[x] 6. Replace World 2 Practice angle missions
+[ ] 6. Replace World 2 Practice angle missions
     - stage=1 currently uses [150°, 225°, 330°, 45°, 135°] on first play.
     - The design specifies 150° -> QII, 300° -> QIV, and 225° -> QIII.
     - Implement those exact three missions before replay randomization.
     - Acceptance: the map, hover labels, and correct answer for each of these three angles are consistent.
+    - Audit: the current first-play list gives 150°, 225°, and 330° for the three missions, not the specified 150°, 300°, and 225°.
 
 [x] 7. Add the missing World 2 Challenge axis-path missions
-    - World 2 Challenge currently randomizes three angle-only paths containing 45°, 135°, 225°, and 315°.
-    - The design requires paths that can include an axis: 45° -> 180° -> 270° -> QI -> x-axis -> y-axis.
-    - Build ordered clue sequences that include both quadrant and axis outcomes.
-    - Acceptance: the Challenge identifies each 45°/180°/270° step correctly and never reports an axis as QI/QII/QIII/QIV.
+    - First-play paths now match the design: 135° -> 315° -> 225°, 45° -> 180° -> 270°, and 300° -> 150° -> 45°.
+    - Added separate X-axis and Y-axis search boxes; axis clues are not labeled as quadrants.
+    - Replay and Rush paths remain randomized and include at least one axis clue.
+    - Acceptance: the 45°/180°/270° path resolves to QI -> X-axis -> Y-axis.
 
 [x] 8. Complete World 2 game behavior gaps
     - Verify cat movement is in a 4-quadrant field and all 4 quadrant targets are reachable.
@@ -58,10 +55,8 @@ TASKS
     - Acceptance: no answer box is both a false target and a valid quadrant.
 
 [x] 9. Fix World 3 coordinate learning and testing
-    - stage=0 currently tells the player that a mouse is on a horizontal or vertical axis but does not explicitly present x = cos θ and y = sin θ as a mission answer.
-    - Make each Learn mission demonstrate the coordinate relationship clearly.
-    - stage=1 should ask the player to reach a stated angle and use COS/SIN, but should verify it is possible to derive the coordinate rather than merely walk to the angle.
-    - Verify the C and V axis restrictions prevent diagonal movement.
+    - Current Learn and Practice prompts state x = cos θ and y = sin θ and identify COS (C) as horizontal and SIN (V) as vertical.
+    - Learn rejects the wrong axis before enabling movement; movement is constrained to the selected axis.
     - Acceptance: missions visibly reinforce x = cos θ and y = sin θ.
 
 [x] 10. Complete World 3 Challenge behavior
@@ -71,10 +66,9 @@ TASKS
     - Acceptance: the Challenge can be completed with 3 hearts and 3 missions, or the current 5-mission count is corrected first.
 
 [x] 11. Verify shared mechanics that are already partially implemented
-    - Wrong answers call wrong(), but a wrong answer during Learn currently lowers no hearts.
-    - Wrong answers during Practice/Challenge lower one heart and end the run at zero hearts.
-    - Challenge levels have a shared timer; the game grants 5 seconds in success() for a correct catch.
-    - Scoring already includes +10 for a catch, +5 for first attempt, +5 for no hint, and +5 for a 3-catch combo.
+    - Current: wrong() removes a heart in Learn, Practice, and Challenge; Learn mistakes also reveal a hint.
+    - Challenge levels use a shared timer; success() adds 5 seconds for a correct catch.
+    - Scoring includes +10 for a catch, +5 for first attempt, +5 for no hint, and +5 for a 3-catch combo.
     - Acceptance: test these mechanics with exactly 3 missions; do not add a second scoring implementation.
 
 [x] 12. Verify the replay/unlock flow
@@ -83,10 +77,11 @@ TASKS
     - Free Explore in the world map must remain separate from normal progression.
     - Acceptance: 3 levels must be completed before the next world is unlocked.
 
-[x] 13. Add a World 1-3 regression test matrix
+[ ] 13. Add a World 1-3 regression test matrix
     - Test 3 mission counts for all 9 levels.
     - Test exact World 1 and World 2 design missions.
     - Test World 3 axis movement and dog behavior.
     - Test wrong answer, hint, replay, timer, restart, stars, and unlocking.
     - Test mouse, touch, WASD/arrows, C/V, Enter, and Space.
     - Acceptance: save pass/fail results for desktop and mobile; no task is marked complete without evidence.
+    - Audit: no regression test matrix or desktop/mobile pass/fail results are present in the workspace.
