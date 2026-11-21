@@ -10,7 +10,7 @@
   const CHALLENGE_SECONDS = [60, 60, 120, 120, 60];
   const MISSION_COUNTS = [
     [3, 3, 3],
-    [4, 3, 3],
+    [3, 3, 3],
     [3, 3, 3],
     [3, 3, 3],
     [3, 3, 3],
@@ -360,6 +360,36 @@
     // ==================== WORLD 2/4: QUADRANTS AND SIGNS ====================
     // World 2 uses quadrant questions; World 4 uses their sin/cos sign values.
     if (w === 1 || w === 3) {
+      // World 2 Learn: keep the first three fixed sign-pair missions.
+      if (w === 1 && stage === 0) {
+        const learnMissions = [
+          {
+            a: 45,
+            q: 1,
+            cos: "+",
+            sin: "+",
+            prompt:
+              "Find the mouse where <strong>x &gt; 0</strong> and <strong>y &gt; 0</strong>. Which quadrant is that?",
+          },
+          {
+            a: 225,
+            q: 3,
+            cos: "−",
+            sin: "−",
+            prompt:
+              "Find the mouse where <strong>x &lt; 0</strong> and <strong>y &lt; 0</strong>. Which quadrant is that?",
+          },
+          {
+            a: 315,
+            q: 4,
+            cos: "+",
+            sin: "−",
+            prompt:
+              "Find the mouse where <strong>x &gt; 0</strong> and <strong>y &lt; 0</strong>. Which quadrant is that?",
+          },
+        ];
+        return learnMissions[index % 3];
+      }
       a =
         stage === 0
           ? [45, 135, 225, 315, 60][index % 5]
