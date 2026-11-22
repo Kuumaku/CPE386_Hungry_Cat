@@ -13,7 +13,7 @@ TASKS
     - Complete Practice by dragging/clicking COS and SIN signs for an angle.
     - Complete Challenge with ordered sign clues and the safe-area/patrolling-dog mechanic.
     - Verify angle signs: QI (+,+), QII (-,+), QIII (-,-), QIV (+,-).
-    - Acceptance: correct sign combinations lead to the correct quadrant and all 3 missions run.
+    - Acceptance: correct sign combinations lead to the correct quadrant and all 5 missions run.
 
 [ ] 2. Finalize World 5: Exact Trigonometric Values
     - Complete Learn values for sin/cos at 0°, 30°, 45°, 60°, and 90°.
@@ -73,7 +73,7 @@ TASKS
     - Acceptance: save one pass/fail report and fix any P0/P1 blocker before delivery.
 
 SHARED ACCEPTANCE CHECKLIST
-- 5 worlds, 15 Story levels, 3 missions per level.
+- 5 worlds, 15 Story levels, 5 missions per level.
 - Story Mode unlocked sequentially.
 - Mouse Rush supports repeated randomized missions.
 - Pre-test and post-test are recorded separately.

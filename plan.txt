@@ -5,6 +5,9 @@ Scope: Worlds 1-3 (Angles, Quadrants, Coordinates)
 Reference Documents: Game_Design.pdf, person1_tasks.txt, game.js, index.html
 Target Files: dist/game.js (primary), dist/index.html, dist/style.css
 
+STATUS: HISTORICAL. This plan predates the five-mission Question.txt alignment.
+Use person1_tasks.txt and person2_tasks.txt as the current task checklists.
+
 --------------------------------------------------------------------------------
 EXECUTIVE SUMMARY & EXECUTION ORDER
 --------------------------------------------------------------------------------

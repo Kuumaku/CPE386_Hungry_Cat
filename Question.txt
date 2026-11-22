@@ -1,0 +1,186 @@
+TRIGO CAT: MOUSE HUNT - COMPLETE QUESTIONS & ANSWERS SUMMARY
+
+============================================================
+WORLD 1: ANGLE FOREST (LO1 - Understanding Angles)
+============================================================
+
+--- STORY MODE ---
+Level 1: Angle Discovery
+- Mission 1: The mouse is hiding at 0°. Which bush should we search? -> Answer: 0°
+- Mission 2: The mouse is hiding at 30°. Which bush should we search? -> Answer: 30°
+- Mission 3: The mouse is hiding at 45°. Which bush should we search? -> Answer: 45°
+- Mission 4: The mouse is hiding at 60°. Which bush should we search? -> Answer: 60°
+- Mission 5: The mouse is hiding at 90°. Which bush should we search? -> Answer: 90°
+
+Level 2: Hidden Mouse
+- Mission 1: Start at 30°. Turn 90° counterclockwise. Where is the mouse? -> Answer: 120°
+- Mission 2: Start at 270°. Turn 30° clockwise. Where is the mouse? -> Answer: 240°
+- Mission 3: Start at 0°. Turn 60° counterclockwise. Where is the mouse? -> Answer: 60°
+- Mission 4: Start at 90°. Turn 30° clockwise. Where is the mouse? -> Answer: 60°
+- Mission 5: Start at 90°. Turn 60° counterclockwise. Where is the mouse? -> Answer: 150°
+
+Level 3: Cat & Mouse Treasure Hunt
+- Mission 1: Start at 0°. Turn 135° counterclockwise, then 90° counterclockwise. -> Answer: 225°
+- Mission 2: Start at 90°. Turn 180° counterclockwise, then 45° clockwise. -> Answer: 225°
+- Mission 3: Start at 270°. Turn 120° counterclockwise, then 90° clockwise. -> Answer: 300°
+- Mission 4: Start at 180°. Turn 120° clockwise, then 30° counterclockwise. -> Answer: 90°
+- Mission 5: Start at 60°. Turn 210° clockwise, then 120° counterclockwise. -> Answer: 330°
+
+--- ENDLESS MODE ---
+- Mission 1: Start at 90°. Turn 60° counterclockwise. -> Answer: 150°
+- Mission 2: Start at 180°. Turn 45° counterclockwise. -> Answer: 225°
+- Mission 3: Start at 0°. Turn 60° counterclockwise. -> Answer: 60°
+- Mission 4: Start at 90°. Turn 45° clockwise. -> Answer: 45°
+- Mission 5: Start at 0°. Turn 45° counterclockwise. -> Answer: 45°
+- Mission 6: Start at 270°. Turn 60° counterclockwise. -> Answer: 330°
+- Mission 7: Start at 90°. Turn 30° clockwise. -> Answer: 60° (PDF typo: 160°)
+- Mission 8: The mouse is hiding at 60°. -> Answer: 60° (PDF typo: 160°)
+- Mission 9: The mouse is hiding at 90°. -> Answer: 90°
+- Mission 10: The mouse is hiding at 150°. -> Answer: 150°
+
+
+============================================================
+WORLD 2: QUADRANT ADVENTURE (LO2 - Quadrants)
+============================================================
+
+--- STORY MODE ---
+Level 1: Quadrant Explorer
+- Mission 1: Find the mouse where x > 0 and y > 0. -> Answer: QI
+- Mission 2: Find the mouse where x < 0 and y > 0. -> Answer: QII
+- Mission 3: Find the mouse where x < 0 and y < 0. -> Answer: QIII (PDF typo: QIV)
+- Mission 4: Find the mouse where x > 0 and y < 0. -> Answer: QIV
+- Mission 5: Find the mouse where x > 0 and y > 0. -> Answer: QI
+
+Level 2: Hidden Mouse
+- Mission 1: The mouse is hiding in the quadrant containing 330°. -> Answer: QIV
+- Mission 2: The mouse is hiding in the quadrant containing 240°. -> Answer: QIII
+- Mission 3: The mouse is hiding in the quadrant containing 315°. -> Answer: QIV
+- Mission 4: The mouse is hiding in the quadrant containing 300°. -> Answer: QIV
+- Mission 5: The mouse is hiding in the quadrant containing 150°. -> Answer: QII
+
+Level 3: Quadrant Mystery Chase
+- Mission 1: Find the box in the quadrant containing 135° -> 315° -> 225°. -> Answer: QII -> QIV -> QIII
+- Mission 2: Find the box in the quadrant containing 225° -> 315° -> 135°. -> Answer: QIII -> QIV -> QII (PDF typo: QII -> QIV -> QII)
+- Mission 3: Find the box in the quadrant containing 45° -> 135° -> 315°. -> Answer: QI -> QII -> QIV
+- Mission 4: Find the box in the quadrant containing 315° -> 135° -> 225°. -> Answer: QIV -> QII -> QIII
+- Mission 5: Find the box in the quadrant containing 45° -> 225° -> 135°. -> Answer: QI -> QIII -> QII
+
+--- ENDLESS MODE ---
+- Mission 1: Quadrant containing 330° -> Answer: QIV
+- Mission 2: Quadrant containing 150° -> Answer: QII
+- Mission 3: Quadrant containing 315° -> Answer: QIV
+- Mission 4: Where x < 0 and y > 0 -> Answer: QII
+- Mission 5: Where x > 0 and y < 0 -> Answer: QIV
+- Mission 6: Where x < 0 and y < 0 -> Answer: QIII
+- Mission 7: Sequence 45° -> 225° -> 135° -> Answer: QI -> QIII -> QII
+- Mission 8: Sequence 315° -> 135° -> 225° -> Answer: QIV -> QII -> QIII
+- Mission 9: Sequence 225° -> 315° -> 135° -> Answer: QIII -> QIV -> QII (PDF typo: QII -> QIV -> QII)
+- Mission 10: Sequence 45° -> 135° -> 315° -> Answer: QI -> QII -> QIV (PDF typo: QI -> QIII -> QII)
+
+
+============================================================
+WORLD 3: COORDINATE VALLEY (LO3 - X = cos θ, Y = sin θ)
+============================================================
+
+--- STORY MODE ---
+Level 1: Choose Your Axis
+- Mission 1: Mouse on horizontal axis (0°). -> Answer: cos 0°
+- Mission 2: Mouse on vertical axis (90°). -> Answer: sin 90°
+- Mission 3: Mouse on horizontal axis (180°). -> Answer: cos 180°
+- Mission 4: Mouse on vertical axis (270°). -> Answer: sin 270°
+- Mission 5: Mouse on horizontal axis (360°). -> Answer: cos 360°
+
+Level 2: Two-Axis Chase (Coordinates: X = cos θ, Y = sin θ)
+- Mission 1: Reach the mouse at 60°. -> Answer: (0.50, 0.87) [PDF lists: (0.55, 0.80)]
+- Mission 2: Reach the mouse at 135°. -> Answer: (-0.71, 0.71) [PDF lists: (-0.68, 0.68)]
+- Mission 3: Reach the mouse at 300°. -> Answer: (0.50, -0.87) [PDF lists: (0.52, -0.85)]
+- Mission 4: Reach the mouse at 45°. -> Answer: (0.71, 0.71) [PDF lists: (0.70, 0.70)]
+- Mission 5: Reach the mouse at 225°. -> Answer: (-0.71, -0.71) [PDF lists: (-0.72, -0.66)]
+
+Level 3: Mouse Escape (Moving Targets)
+- Mission 1: 60° -> 150° -> 240° -> 330° -> Answer: (0.5, 0.87) -> (-0.87, 0.5) -> (-0.5, -0.87) -> (0.87, -0.5)
+- Mission 2: 135° -> 225° -> 315° -> 45° -> Answer: (-0.71, 0.71) -> (-0.71, -0.71) -> (0.71, -0.71) -> (0.71, 0.71)
+- Mission 3: 120° -> 210° -> 300° -> 30° -> Answer: (-0.5, 0.87) -> (-0.87, -0.5) -> (0.5, -0.87) -> (0.87, 0.5)
+- Mission 4: 135° -> 225° -> 315° -> 45° -> Answer: (-0.71, 0.71) -> (-0.71, -0.71) -> (0.71, -0.71) -> (0.71, 0.71)
+- Mission 5: 45° -> 135° -> 225° -> 315° -> Answer: (0.71, 0.71) -> (-0.71, 0.71) -> (-0.71, -0.71) -> (0.71, -0.71)
+
+--- ENDLESS MODE ---
+(Left blank in source document)
+
+
+============================================================
+WORLD 4: HIDDEN SIGNS (LO4 - Signs of Sin and Cos)
+============================================================
+
+--- STORY MODE ---
+Level 1: Sign Direction
+- Mission 1: Find the mouse where cos is positive and sin is positive. -> Answer: QI
+- Mission 2: Find the mouse where cos is negative and sin is positive. -> Answer: QII
+- Mission 3: Find the mouse where cos is negative and sin is negative. -> Answer: QIII
+- Mission 4: Find the mouse where cos is positive and sin is negative. -> Answer: QIV
+- Mission 5: Find the mouse where cos is positive and sin is positive. -> Answer: QI
+
+Level 2: Sign Catch
+- Mission 1: At 150°, choose signs of COS and SIN. -> Answer: sin +, cos -
+- Mission 2: At 225°, choose signs of COS and SIN. -> Answer: sin -, cos -
+- Mission 3: At 330°, choose signs of COS and SIN. -> Answer: sin -, cos +
+- Mission 4: At 45°, choose signs of COS and SIN. -> Answer: sin +, cos +
+- Mission 5: At 135°, choose signs of COS and SIN. -> Answer: sin +, cos -
+
+Level 3: The Three-Clue Trail
+- Mission 1: (1) cos -, sin + (2) cos +, sin - (3) cos +, sin + -> Answer: QII -> QIV -> QI
+- Mission 2: (1) cos -, sin + (2) cos +, sin - (3) cos +, sin + -> Answer: QII -> QIV -> QI (PDF typo: QII -> QIII -> QI)
+- Mission 3: (1) cos +, sin + (2) cos +, sin - (3) cos -, sin + -> Answer: QI -> QIV -> QII (PDF typo: QI -> QIV -> QIII)
+- Mission 4: (1) cos +, sin - (2) cos -, sin + (3) cos -, sin - -> Answer: QIV -> QII -> QIII
+- Mission 5: (1) cos +, sin + (2) cos -, sin + (3) cos -, sin - -> Answer: QI -> QII -> QIII
+
+--- ENDLESS MODE ---
+- Mission 1: Find mouse where cos+, sin+ -> Answer: QI
+- Mission 2: Find mouse where sin+, cos- -> Answer: QII
+- Mission 3: Find mouse where cos-, sin- -> Answer: QIII
+- Mission 4: Find mouse where sin-, cos+ -> Answer: QIV
+- Mission 5: Angle 45°: signs of sin and cos? -> Answer: sin+, cos+
+- Mission 6: Angle 120°: signs of sin and cos? -> Answer: sin+, cos-
+- Mission 7: Angle 210°: signs of sin and cos? -> Answer: sin-, cos-
+- Mission 8: Angle 315°: signs of sin and cos? -> Answer: sin-, cos+
+- Mission 9: (1) cos > 0, sin > 0 (2) cos < 0, sin > 0 (3) cos < 0, sin < 0 -> Answer: QI -> QII -> QIII
+- Mission 10: (1) cos > 0, sin < 0 (2) cos < 0, sin < 0 (3) cos < 0, sin > 0 -> Answer: QIV -> QIII -> QII
+
+
+============================================================
+WORLD 5: VALUE DISCOVERY (LO5 - Exact Trig Values)
+============================================================
+
+--- STORY MODE ---
+Level 1: Trig Value Discovery
+- Mission 1: Exact value of sin 0° -> Answer: 0
+- Mission 2: Exact value of cos 30° -> Answer: √3 / 2
+- Mission 3: Exact value of sin 45° -> Answer: √2 / 2
+- Mission 4: Exact value of cos 60° -> Answer: 1 / 2
+- Mission 5: Exact value of sin 90° -> Answer: 1
+
+Level 2: Reference Angle Hunt
+- Mission 1: Exact value of cos 330° -> Answer: √3 / 2
+- Mission 2: Exact value of cos 135° -> Answer: -√2 / 2
+- Mission 3: Exact value of cos 45° -> Answer: √2 / 2
+- Mission 4: Exact value of sin 45° -> Answer: √2 / 2
+- Mission 5: Exact value of sin 60° -> Answer: √3 / 2
+
+Level 3: Trig Treasure Challenge
+- Mission 1: Exact value of sin 225° -> Answer: -√2 / 2
+- Mission 2: Exact value of cos 300° -> Answer: 1 / 2
+- Mission 3: Exact value of sin 210° -> Answer: -1 / 2
+- Mission 4: Exact value of tan 45° -> Answer: 1
+- Mission 5: Exact value of cos 315° -> Answer: √2 / 2
+
+--- ENDLESS MODE ---
+- Mission 1: sin 0° = ? -> Answer: 0
+- Mission 2: cos 30° = ? -> Answer: √3 / 2
+- Mission 3: sin 45° = ? -> Answer: √2 / 2
+- Mission 4: cos 60° = ? -> Answer: 1 / 2
+- Mission 5: sin 90° = ? -> Answer: 1
+- Mission 6: cos 120° = ? -> Answer: -1 / 2
+- Mission 7: sin 135° = ? -> Answer: √2 / 2
+- Mission 8: cos 210° = ? -> Answer: -√3 / 2 (PDF omits negative sign: √3 / 2)
+- Mission 9: sin 225° = ? -> Answer: -√2 / 2 (PDF omits negative sign: √2 / 2)
+- Mission 10: cos 300° = ? -> Answer: 1 / 2

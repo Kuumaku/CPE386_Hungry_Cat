@@ -48,12 +48,12 @@
 | **World 5: Trig Treasure** | Exact Trigonometric Values | **LO5:** Determine exact values of $\sin\theta, \cos\theta$ (and $\tan\theta = \sin/\cos$) using reference angles. | Level 13–15 |
 
 ### 2.2 Level Types within Each World
-1. **Level 1 (Learn):** Tutorial mode with explanatory hints and visual cues. **No hearts lost on incorrect attempts**, allowing players to safely explore and learn from mistakes.
+1. **Level 1 (Learn):** Tutorial mode with explanatory hints and visual cues. Incorrect attempts cost a heart and reveal a hint.
 2. **Level 2 (Practice):** Randomized/semi-hidden questions with reduced hints. Standard lives system (3 hearts).
 3. **Level 3 (Challenge):** Timed obstacle level featuring dynamic hazards (moving bees, patrolling dogs, or disappearing targets). Correct catches award $+5\text{ seconds}$ bonus time.
 
 ### 2.3 Modes
-* **Story Mode:** Sequential progression across 5 Worlds (15 Levels). Each level requires completing exactly **3 missions**.
+* **Story Mode:** Sequential progression across 5 Worlds (15 Levels). Each level requires completing exactly **5 missions**, matching `Question.txt`.
 * **Endless Mode (Mouse Rush):** Continuous challenge where questions are pulled across all unlocked worlds. Continues until player loses all 3 hearts. Tracks high score (`rushBest`).
 
 ---
@@ -61,8 +61,8 @@
 ## 3. Core Game Rules & Logic Systems
 
 ### 3.1 Mission Count
-* In **Story Mode**, every level has **3 missions** (catching 1 mouse = completing 1 mission).
-* In **Mouse Rush**, the run is indefinite with no 3-mission cap.
+* In **Story Mode**, every level has **5 missions** (catching 1 mouse = completing 1 mission).
+* In **Mouse Rush**, the run is indefinite with no 5-mission cap.
 
 ### 3.2 Scoring System
 * **Catch a Mouse:** $+10\text{ points}$
@@ -73,7 +73,7 @@
 
 ### 3.3 Hearts & Health System
 * Player starts each level with **3 Hearts** (`♥ ♥ ♥`).
-* **Learn Levels:** Incorrect attempts produce feedback toasts and guide arrows with **0 hearts lost**.
+* **Learn Levels:** Incorrect attempts deduct **1 heart** and automatically reveal a hint.
 * **Practice & Challenge Levels:** Incorrect attempts or hazard collisions deduct **1 Heart**.
 * Reaching **0 Hearts** triggers `showResult(false)` (Game Over) requiring a level restart.
 * Completing a level resets hearts to 3 for the next level.
@@ -103,7 +103,8 @@ Below is the complete catalog of all state properties, mathematical helpers, gam
 * `ANGLES`: Standard angle array `[0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330]`.
 * `INNER`: Filtered angles excluding the primary axes (`a % 90 !== 0`).
 * `CHALLENGE_SECONDS`: Array of time limits for stage 2 of each world: `[60, 60, 120, 120, 60]`.
-* `MISSION_COUNTS`: Array of mission counts `[[3,3,3], [3,3,3], [3,3,3], [3,3,3], [3,3,3]]`.
+* `MISSION_COUNTS`: Array of mission counts `[[5,5,5], [5,5,5], [5,5,5], [5,5,5], [5,5,5]]`.
+* `STORY_QUESTION_BANKS`: Five-question Story decks aligned with `Question.txt`; cleared Learn and Practice decks are reshuffled on replay.
 * `WORLDS`: Metadata for all 5 worlds (name, topic, icon, description, titles, lessons).
 * `fresh()`: Factory function returning default persistent storage structure (`unlocked`, `stars`, `best`, `coins`, `rushBest`, `total`, `first`, `hints`, `attempts`, `pre`, `post`, `skin`).
 * `saved`: Loaded object from `localStorage.getItem('trigo-cat-v1')`.
@@ -171,7 +172,7 @@ Below is the complete catalog of all state properties, mathematical helpers, gam
 | :--- | :--- |
 | `scenery()` | Generates static background SVG: meadow grass gradients, peripheral trees, decorative bushes, and sparkles. |
 | `renderNav()` | Generates the 5 world navigation buttons on the left sidebar, including lock icons and active world indicators. |
-| `renderMission()` | Updates the mission card DOM: mission count (`01 / 03`), title, prompt text, mission dots, clue pills, and contextual controls (C/V axis buttons, sign drops, reference table button). |
+| `renderMission()` | Updates the mission card DOM: mission count (`01 / 05`), title, prompt text, mission dots, clue pills, and contextual controls (C/V axis buttons, sign drops, reference table button). |
 | `renderClues()` | Renders sequential clue pills (`Clue 1 of 3`) for Challenge levels. |
 | `drawBoard()` | Draws the active math canvas: coordinate axes ($x, y$), unit circle dashed line, angle bushes with degree labels (W1), quadrant boundaries and Roman numeral labels (W2, W4), grid lines (W3), or safe area circle. |
 | `drawEntities()` | Renders interactive entities: bush targets, quadrant boxes, moving mice, patrolling dogs, bees, and floating value mice. |
@@ -199,7 +200,9 @@ Below is the complete catalog of all state properties, mathematical helpers, gam
 
 ---
 
-## 5. Person 1 Tasks: Prioritized Implementation Plan
+## 5. Person 1 Tasks: Prioritized Implementation Plan (Superseded)
+
+> This roadmap predates the five-mission `Question.txt` alignment. Use `person1_tasks.txt` and `person2_tasks.txt` as the current checklists; the roadmap below is historical.
 
 Below is the step-by-step roadmap for **Person 1**, designed to tackle foundational game architecture first, followed by question design alignment, interactive mechanics, and testing.
 

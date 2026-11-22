@@ -9,18 +9,81 @@
   // One shared clock per Challenge level; each correct catch grants five seconds.
   const CHALLENGE_SECONDS = [60, 60, 120, 120, 60];
   const MISSION_COUNTS = [
-    [3, 3, 3],
-    [3, 3, 3],
-    [3, 3, 3],
-    [3, 3, 3],
-    [3, 3, 3],
+    [5, 5, 5],
+    [5, 5, 5],
+    [5, 5, 5],
+    [5, 5, 5],
+    [5, 5, 5],
   ];
-  const WORLD2_CHALLENGE_SEQUENCES = [
-    [135, 315, 225],
-    [45, 180, 270],
-    [300, 150, 45],
+  const STORY_QUESTION_BANKS = [
+    [
+      [0, 30, 45, 60, 90],
+      [
+        [30, 90, 1],
+        [270, 30, -1],
+        [0, 60, 1],
+        [90, 30, -1],
+        [90, 60, 1],
+      ],
+      [
+        [0, 135, 90, 1, 1],
+        [90, 180, 45, 1, -1],
+        [270, 120, 90, 1, -1],
+        [180, 120, 30, -1, 1],
+        [60, 210, 120, -1, 1],
+      ],
+    ],
+    [
+      [45, 135, 225, 315, 45],
+      [330, 240, 315, 300, 150],
+      [
+        [135, 315, 225],
+        [225, 315, 135],
+        [45, 135, 315],
+        [315, 135, 225],
+        [45, 225, 135],
+      ],
+    ],
+    [
+      [0, 90, 180, 270, 360],
+      [60, 135, 300, 45, 225],
+      [60, 135, 120, 135, 45],
+    ],
+    [
+      [45, 135, 225, 315, 45],
+      [150, 225, 330, 45, 135],
+      [
+        [135, 315, 45],
+        [135, 315, 45],
+        [45, 315, 135],
+        [315, 135, 225],
+        [45, 135, 225],
+      ],
+    ],
+    [
+      [
+        ["sin", 0],
+        ["cos", 30],
+        ["sin", 45],
+        ["cos", 60],
+        ["sin", 90],
+      ],
+      [
+        ["cos", 330],
+        ["cos", 135],
+        ["cos", 45],
+        ["sin", 45],
+        ["sin", 60],
+      ],
+      [
+        ["sin", 225],
+        ["cos", 300],
+        ["sin", 210],
+        ["tan", 45],
+        ["cos", 315],
+      ],
+    ],
   ];
-  const WORLD2_CHALLENGE_ANGLES = [45, 135, 225, 315, 0, 90, 180, 270];
   const missionCount = () => MISSION_COUNTS[state.world][state.stage];
   const isTimedChallenge = () => state.mode === "story" && state.stage === 2;
   const WORLDS = [
@@ -190,11 +253,12 @@
     }
     return a;
   }
+  const WORLD2_CHALLENGE_ANGLES = [45, 135, 225, 315, 0, 90, 180, 270];
   function randomWorld2ChallengeSequence() {
     const sequence = shuffle(WORLD2_CHALLENGE_ANGLES).slice(0, 3);
-    if (!sequence.some((a) => a % 90 === 0))
+    if (!sequence.some((angle) => angle % 90 === 0))
       sequence[Math.floor(Math.random() * sequence.length)] = sample(
-        [0, 90, 180, 270].filter((a) => !sequence.includes(a)),
+        [0, 90, 180, 270].filter((angle) => !sequence.includes(angle)),
       );
     return sequence;
   }
@@ -317,59 +381,20 @@
         }),
     );
   }
-  function makeQuestion(w, stage, index, choice = {}) {
-    // Build one World/Level question for Story or replay mode.
-    const replay = !!saved.stars[w * 3 + stage + 1] || state.mode === "rush";
-    let a;
-
-    // ==================== WORLD 1: ANGLE FOREST ====================
+  function questionChoice(w, stage, entry) {
+    if (w === 4) return { fn: entry[0], angle: entry[1] };
+    if (w === 0 && stage === 1) return { combo: entry };
+    if (w === 0 && stage === 2) return { route: entry };
+    if ((w === 1 || w === 3) && stage === 2)
+      return { sequence: entry };
+    return { angle: entry };
+  }
+  function rushChoice(w, stage) {
     if (w === 0) {
-      if (stage === 0) {
-        const learnMissions = [
-          {
-            a: 30,
-            prompt: "Find <strong>30°</strong>. Which bush should we search?",
-          },
-          {
-            a: 90,
-            prompt: "Find <strong>90°</strong>. Which bush should we search?",
-          },
-          {
-            a: 150,
-            prompt: "Find <strong>150°</strong>. Which bush should we search?",
-          },
-        ];
-        if (choice.angle !== undefined) {
-          a = choice.angle;
-          return {
-            a,
-            prompt: `Find <strong>${a}°</strong>. Which bush should we search?`,
-          };
-        }
-        if (!replay) {
-          return learnMissions[index % 3];
-        }
-        const replayAngles = [30, 90, 150, 45, 60, 0];
-        a = replayAngles[index % replayAngles.length];
+      if (stage === 0) return { angle: sample([30, 90, 150, 45, 60, 0]) };
+      if (stage === 1)
         return {
-          a,
-          prompt: `Find <strong>${a}°</strong>. Which bush should we search?`,
-        };
-      }
-      if (stage === 2) {
-        const routes = [
-          [30, 90],
-          [90, -30],
-          [0, -90],
-        ];
-        const [begin, turn] = routes[index % routes.length];
-        return {
-          a: (begin + turn + 360) % 360,
-          prompt: `Start at <strong>${begin}°</strong>. Rotate <strong>${Math.abs(turn)}° ${turn > 0 ? "counterclockwise" : "clockwise"}</strong>. Find the final angle and avoid the bee.`,
-        };
-      }
-      const combos = replay
-        ? shuffle([
+          combo: sample([
             [30, 90, 1],
             [90, 30, -1],
             [0, 90, -1],
@@ -380,71 +405,80 @@
             [0, 60, 1],
             [90, 60, 1],
             [270, 30, -1],
-          ])
-        : [
-            [30, 90, 1],
-            [90, 30, -1],
-            [0, 90, -1],
-            [180, 45, 1],
-            [270, 60, 1],
-          ];
-      const [start, turn, dir] = choice.combo || combos[index % combos.length];
-      a = (start + turn * dir + 360) % 360;
+          ]),
+        };
+      return { route: sample(STORY_QUESTION_BANKS[w][stage]) };
+    }
+    if (w === 1) {
+      if (stage === 0) return { angle: sample([45, 135, 225, 315, 60]) };
+      if (stage === 1) return { angle: sample(INNER) };
+      return { sequence: randomWorld2ChallengeSequence() };
+    }
+    if (w === 2) {
+      if (stage === 0)
+        return { angle: sample([0, 90, 180, 270, 360]) };
+      return { angle: sample(INNER) };
+    }
+    if (w === 3) {
+      if (stage === 0) return { angle: sample(STORY_QUESTION_BANKS[w][stage]) };
+      if (stage === 1) return { angle: sample(INNER) };
+      return { sequence: shuffle([45, 135, 225, 315]).slice(0, 3) };
+    }
+    if (stage === 0)
+      return questionChoice(w, stage, sample(STORY_QUESTION_BANKS[w][stage]));
+    const fn = sample(stage === 1 ? ["sin", "cos"] : ["sin", "cos", "tan"]);
+    return {
+      fn,
+      angle: sample(fn === "tan" ? [45, 135, 225, 315] : INNER),
+    };
+  }
+  function makeQuestion(w, stage, index, choice = {}) {
+    // Build one question from the authored story bank.
+    const bank = STORY_QUESTION_BANKS[w][stage];
+    if (!Object.keys(choice).length) {
+      choice =
+        state.mode === "rush"
+          ? rushChoice(w, stage)
+          : questionChoice(w, stage, bank[index % bank.length]);
+    }
+
+    // World 1: angle turns and multi-turn Challenge routes.
+    if (w === 0) {
+      if (stage === 0) {
+        const a = choice.angle;
+        return {
+          a,
+          prompt: `The mouse is hiding at <strong>${a}°</strong>. Which bush should we search?`,
+        };
+      }
+      if (stage === 1) {
+        const [start, turn, direction] = choice.combo,
+          a = (start + turn * direction + 360) % 360;
+        return {
+          a,
+          prompt: `Start at <strong>${start}°</strong>. Turn <strong>${turn}° ${direction > 0 ? "counterclockwise" : "clockwise"}</strong>. Where is the mouse?`,
+        };
+      }
+      const [start, firstTurn, secondTurn, firstDirection, secondDirection] =
+          choice.route,
+        firstAngle = (start + firstTurn * firstDirection + 360) % 360,
+        a = (firstAngle + secondTurn * secondDirection + 360) % 360;
       return {
         a,
-        prompt: `Start at <strong>${start}°</strong>. Turn <strong>${turn}° ${dir === 1 ? "counterclockwise" : "clockwise"}</strong>. Where is the mouse?`,
+        prompt: `Start at <strong>${start}°</strong>. Turn <strong>${firstTurn}° ${firstDirection > 0 ? "counterclockwise" : "clockwise"}</strong>, then <strong>${secondTurn}° ${secondDirection > 0 ? "counterclockwise" : "clockwise"}</strong>. Find the mouse and avoid the bee.`,
       };
     }
 
-    // ==================== WORLD 2/4: QUADRANTS AND SIGNS ====================
-    // World 2 uses quadrant questions; World 4 uses their sin/cos sign values.
+    // Worlds 2 and 4: the same quadrant targets, phrased as signs in World 4.
     if (w === 1 || w === 3) {
-      // World 2 Learn: keep the first three fixed sign-pair missions.
-      if (w === 1 && stage === 0) {
-        const learnMissions = [
-          {
-            a: 45,
-            q: 1,
-            cos: "+",
-            sin: "+",
-            prompt:
-              "Find the mouse where <strong>x &gt; 0</strong> and <strong>y &gt; 0</strong>. Which quadrant is that?",
-          },
-          {
-            a: 225,
-            q: 3,
-            cos: "−",
-            sin: "−",
-            prompt:
-              "Find the mouse where <strong>x &lt; 0</strong> and <strong>y &lt; 0</strong>. Which quadrant is that?",
-          },
-          {
-            a: 315,
-            q: 4,
-            cos: "+",
-            sin: "−",
-            prompt:
-              "Find the mouse where <strong>x &gt; 0</strong> and <strong>y &lt; 0</strong>. Which quadrant is that?",
-          },
-        ];
-        return learnMissions[index % 3];
-      }
-      a =
-        stage === 0
-          ? [45, 135, 225, 315, 60][index % 5]
-          : (choice.angle ??
-            (replay ? sample(INNER) : [150, 225, 330, 45, 135][index % 5]));
-      let seq =
-        stage === 2
-          ? (choice.sequence ||
-            (w === 1
-              ? randomWorld2ChallengeSequence()
-              : shuffle([45, 135, 225, 315]).slice(0, 3)))
-          : null;
-      if (w === 1 && stage === 2) a = seq[seq.length - 1];
-      const target = q(a),
+      const a =
+          stage === 2
+            ? choice.sequence[choice.sequence.length - 1]
+            : choice.angle,
+        target = q(a),
         cos = target === 1 || target === 4 ? "+" : "−",
-        sin = target <= 2 ? "+" : "−";
+        sin = target <= 2 ? "+" : "−",
+        seq = stage === 2 ? choice.sequence : null;
       return {
         a,
         q: target,
@@ -454,10 +488,10 @@
         prompt:
           w === 1
             ? stage === 0
-              ? `Find the mouse where <strong>x ${cos === "+" ? ">" : "<"} 0</strong> and <strong>y ${sin === "+" ? ">" : "<"} 0</strong>.`
+              ? `Find the mouse where <strong>x ${cos === "+" ? ">" : "<"} 0</strong> and <strong>y ${sin === "+" ? ">" : "<"} 0</strong>. Which quadrant is that?`
               : stage === 1
                 ? `The mouse is hiding in the quadrant containing <strong>${a}°</strong>.`
-                : "Follow three clues in order. Open the box for each clue to reveal the mouse."
+                : `Follow the quadrant path: <strong>${seq.join("° → ")}°</strong>.`
             : stage === 0
               ? `Find the mouse where <strong>cos θ is ${cos === "+" ? "positive" : "negative"}</strong> and <strong>sin θ is ${sin === "+" ? "positive" : "negative"}</strong>.`
               : stage === 1
@@ -466,53 +500,29 @@
       };
     }
 
-    // ==================== WORLD 3: COORDINATE VALLEY ====================
+    // World 3: unit-circle movement, including the four-angle moving-target routes.
     if (w === 2) {
-      a =
-        stage === 0
-          ? [0, 90, 180, 270, 360][index % 5]
-          : (choice.angle ??
-            (replay ? sample(INNER) : [60, 135, 300, 45, 225][index % 5]));
+      const a = choice.angle;
+      const route =
+        stage === 2
+          ? Array.from({ length: 4 }, (_, i) => (a + i * 90) % 360)
+          : null;
       return {
         a,
+        route,
+        routeIndex: 0,
         prompt:
           stage === 0
             ? `The mouse is on the <strong>${a % 180 === 0 ? "horizontal" : "vertical"} axis</strong>. On the unit circle, <strong>x = cos θ</strong> and <strong>y = sin θ</strong>. Choose ${a % 180 === 0 ? "<strong>COS (C)</strong> to move horizontally" : "<strong>SIN (V)</strong> to move vertically"}, then catch it.`
-            : `Reach the mouse at <strong>${a}°</strong>. Use <strong>COS (C)</strong> for horizontal movement and x = cos θ; use <strong>SIN (V)</strong> for vertical movement and y = sin θ.${stage === 2 ? "<br>Watch for the patrolling dog!" : ""}`,
+            : stage === 2
+              ? `Follow the moving mouse through <strong>${route.join("° → ")}°</strong>. Use COS for x = cos θ and SIN for y = sin θ.<br>Watch for the patrolling dog!`
+              : `Reach the mouse at <strong>${a}°</strong>. Use <strong>COS (C)</strong> for horizontal movement and x = cos θ; use <strong>SIN (V)</strong> for vertical movement and y = sin θ.`,
       };
     }
 
-    // ==================== WORLD 5: TRIG TREASURE ====================
-    const fixed = [
-      [
-        ["sin", 0],
-        ["cos", 30],
-        ["sin", 45],
-        ["cos", 60],
-        ["sin", 90],
-      ],
-      [
-        ["cos", 120],
-        ["sin", 150],
-        ["cos", 225],
-      ],
-      [
-        ["sin", 300],
-        ["cos", 315],
-        ["tan", 135],
-      ],
-    ];
-    let [fn, angle] = fixed[stage][index % fixed[stage].length];
-    if ((replay || choice.fn) && stage !== 0) {
-      fn =
-        choice.fn ||
-        (stage === 2
-          ? ["sin", "cos", "tan"][index % 3]
-          : sample(["sin", "cos"]));
-      angle =
-        choice.angle ?? sample(fn === "tan" ? [45, 135, 225, 315] : INNER);
-    }
-    const answer = val(fn, angle),
+    // World 5: exact trigonometric values.
+    const { fn, angle } = choice,
+      answer = val(fn, angle),
       pool = ["0", "1", "−1", "1/2", "−1/2", "√2/2", "−√2/2", "√3/2", "−√3/2"];
     return {
       a: angle,
@@ -520,7 +530,7 @@
       answer,
       options: shuffle([
         answer,
-        ...shuffle(pool.filter((v) => v !== answer)).slice(
+        ...shuffle(pool.filter((value) => value !== answer)).slice(
           0,
           stage === 2 ? 3 : 2,
         ),
@@ -528,75 +538,12 @@
       prompt: `A mouse is carrying the exact value of <strong>${fn} ${angle}°</strong>.<br>Catch the one with the right answer.`,
     };
   }
-  // Construct a shuffled deck, so a story run never contains the same question twice.
+  // First visits use Question.txt order; cleared Learn/Practice levels reshuffle that same deck.
   function buildQuestions(w, stage, count) {
-    const replay = !!saved.stars[w * 3 + stage + 1] || state.mode === "rush";
-    let choices = [];
-
-    // World 1 replay: shuffled angle and turn combinations.
-    if (w === 0 && stage > 0 && replay)
-      choices = shuffle([
-        [30, 90, 1],
-        [90, 30, -1],
-        [0, 90, -1],
-        [180, 45, 1],
-        [270, 60, 1],
-        [90, 45, -1],
-        [0, 45, 1],
-        [0, 60, 1],
-        [90, 60, 1],
-        [270, 30, -1],
-      ]).map((combo) => ({ combo }));
-
-    // World 2 first play follows the design's fixed clue paths.
-    if (w === 1 && stage === 2 && !replay)
-      choices = WORLD2_CHALLENGE_SEQUENCES.map((sequence) => ({ sequence }));
-
-    // World 2 replay and World 4: ordered three-clue sequences.
-    if (
-      ((w === 1 && replay) || w === 3) &&
-      stage === 2
-    ) {
-      const angles =
-          w === 1 ? WORLD2_CHALLENGE_ANGLES : [45, 135, 225, 315],
-        sequences = [];
-      for (const a of angles)
-        for (const b of angles)
-          for (const c of angles)
-            if (
-              a !== b &&
-              a !== c &&
-              b !== c &&
-              (w !== 1 || [a, b, c].some((angle) => angle % 90 === 0))
-            )
-              sequences.push({ sequence: [a, b, c] });
-      const deck = shuffle(sequences);
-      while (choices.length < count && deck.length) {
-        const previous = choices.at(-1)?.sequence[0],
-          next = deck.findIndex((item) => item.sequence[0] !== previous);
-        choices.push(deck.splice(Math.max(0, next), 1)[0]);
-      }
-    }
-    if ((w === 1 || w === 3) && stage === 1 && replay)
-      choices = shuffle(INNER).map((angle) => ({ angle }));
-
-    // World 3 replay: coordinate and moving-mouse angles.
-    if (w === 2 && stage > 0 && replay)
-      choices = shuffle(INNER).map((angle) => ({ angle }));
-
-    // World 5 replay: sin/cos combinations and tan challenges.
-    if (w === 4 && stage === 1)
-      choices = shuffle(
-        ["sin", "cos"].flatMap((fn) => INNER.map((angle) => ({ fn, angle }))),
-      );
-    if (w === 4 && stage === 2) {
-      const angles = shuffle(INNER),
-        tanAngles = shuffle([45, 135, 225, 315]);
-      choices = Array.from({ length: count }, (_, i) => ({
-        fn: ["sin", "cos", "tan", "sin", "cos"][i % 5],
-        angle: i % 5 === 2 ? tanAngles[0] : angles[i],
-      }));
-    }
+    const bank = STORY_QUESTION_BANKS[w][stage],
+      replay = !!saved.stars[w * 3 + stage + 1],
+      entries = replay && stage < 2 ? shuffle([...bank]) : bank,
+      choices = entries.map((entry) => questionChoice(w, stage, entry));
     return Array.from({ length: count }, (_, i) =>
       makeQuestion(w, stage, i, choices[i] || {}),
     );
@@ -744,6 +691,8 @@
     $("answer-controls").innerHTML = "";
     $("clue-progress").innerHTML = "";
     if (z.seq) renderClues();
+    if (state.mode === "story" && w === 2 && s === 2)
+      renderCoordinateRoute();
     if (w === 2) {
       $("answer-controls").innerHTML =
         '<div class="axis-controls"><button data-axis="cos">COS <kbd>C</kbd></button><button data-axis="sin">SIN <kbd>V</kbd></button></div>';
@@ -836,6 +785,12 @@
         intro +
         `Go where <strong>cos θ is ${n === 1 || n === 4 ? "positive" : "negative"}</strong> and <strong>sin θ is ${n <= 2 ? "positive" : "negative"}</strong>.`;
     }
+  }
+  function renderCoordinateRoute() {
+    const route = state.question.route,
+      progress = state.question.routeIndex || 0;
+    $("clue-progress").innerHTML =
+      `<div class="clue-pills">${route.map((angle, i) => `<span class="${i < progress ? "passed" : i === progress ? "active" : ""}">${i < progress ? "✓" : angle + "°"}</span>`).join("")}</div>`;
   }
   function drawBoard() {
     // Render the active World board. Each world index below has its own field layout.
@@ -1037,18 +992,22 @@
         state.target = pos(state.question.a, 175 + Math.min(t * 8, 42));
       }
       if (s === 2) {
-        const offset = Math.floor(t / 4.5) % 4;
-        const a = (state.question.a + offset * 90) % 360;
+        const route = state.question.route,
+          a =
+            state.mode === "rush"
+              ? route[Math.floor(t / 4.5) % route.length]
+              : route[state.question.routeIndex];
         state.target = pos(a);
         if (state.question.activeAngle !== a) {
           state.question.activeAngle = a;
           $("prompt").innerHTML =
-            `Reach the mouse at <strong>${a}°</strong>. Use COS for x and SIN for y.<br>Watch for the patrolling dog!`;
+            `Follow the route <strong>${route.join("° → ")}°</strong>. Current target: <strong>${a}°</strong>. Use COS for x = cos θ and SIN for y = sin θ.<br>${state.mode === "rush" ? "Catch it before it moves and watch for the patrolling dog!" : "Catch each mouse in order and watch for the patrolling dog!"}`;
         }
         $("moving-mouse")
           ?.querySelector("text")
           ?.replaceChildren(document.createTextNode(a + "°"));
-        if (t % 4.5 > 3.5) $("moving-mouse")?.classList.add("pulse");
+        if (state.mode === "rush" && t % 4.5 > 3.5)
+          $("moving-mouse")?.classList.add("pulse");
         else $("moving-mouse")?.classList.remove("pulse");
       }
       const p = state.target;
@@ -1494,6 +1453,27 @@
         } else toast("A little closer! Move toward the mouse, then catch.");
         return;
       }
+      if (
+        s === 2 &&
+        state.mode !== "rush" &&
+        state.question.routeIndex < state.question.route.length - 1
+      ) {
+        const caughtAngle = state.question.route[state.question.routeIndex];
+        state.question.routeIndex++;
+        const nextAngle = state.question.route[state.question.routeIndex];
+        state.question.activeAngle = null;
+        state.target = pos(nextAngle);
+        state.axis = null;
+        state.moveTo = null;
+        keys.clear();
+        renderCoordinateRoute();
+        updateCat();
+        toast(
+          `Caught ${caughtAngle}°. Now catch the mouse at ${nextAngle}°.`,
+        );
+        beep();
+        return;
+      }
       success(state.target);
       return;
     }
@@ -1683,8 +1663,8 @@
         "Read the mission. All angles start at <strong>0° on the right</strong> and grow counterclockwise.",
         "Click a bush to aim, then press <strong>Space</strong> or <strong>Catch the mouse</strong>.",
         s === 2
-          ? "Three bees change bushes every <strong>5 seconds</strong>. If a bee blocks your target, wait before catching."
-          : `Find ${missionCount()} mice to complete the level. Learn levels let you try again without losing hearts.`,
+          ? "One bee changes bushes every <strong>5 seconds</strong>. If it blocks another bush, wait before catching."
+          : `Find ${missionCount()} mice to complete the level. Wrong answers cost one heart and reveal a hint.`,
       ];
 
     // ==================== WORLDS 2/4: QUADRANT/SIGN GUIDE ====================
@@ -1708,7 +1688,7 @@
         "After choosing an axis, a line appears beside the cat. Use <strong>A / D</strong> for COS or <strong>W / S</strong> for SIN. Switch axes whenever you need.",
         "Move close to the mouse and press <strong>Enter</strong> or <strong>Space</strong> to catch. You can also swipe near the mouse." +
           (s === 2
-            ? " The mouse moves every <strong>4–5 seconds</strong> and flashes before moving. Avoid the dog."
+            ? " Catch all four mice in each angle route, in order. The target moves after each catch. Avoid the dog."
             : ""),
       ];
 
@@ -1742,7 +1722,7 @@
       );
     openModal(
       modalTop("A LITTLE FIELD GUIDE") +
-        `<h2 class="modal-title">${WORLDS[w].titles[s]}</h2><p class="modal-copy">${s === 0 ? "A safe place to be curious. Mistakes cost no hearts." : `Three hearts. ${missionCount()} ${missionCount() === 1 ? "mouse" : "mice"}. One clever cat.`}</p>` +
+        `<h2 class="modal-title">${WORLDS[w].titles[s]}</h2><p class="modal-copy">${s === 0 ? "You have three hearts. Wrong answers cost one heart and reveal a hint." : `Three hearts. ${missionCount()} ${missionCount() === 1 ? "mouse" : "mice"}. One clever cat.`}</p>` +
         steps
           .map(
             (t, i) =>
