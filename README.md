@@ -24,6 +24,9 @@
 * **`game.js`**:
   - Self-contained IIFE (`'use strict'; (() => { ... })();`) encapsulating the entire game engine.
   - Real-time tick loop (`requestAnimationFrame`), input system (physical keyboard code mapping, pointer drag, mouse click, and swipe), math coordinate system, SVG board rendering, mission evaluation, scoring, and progress persistence.
+  - Sound is enabled by default; the toggle controls only looping background music, while story-mode answer effects and button-click sounds remain enabled when music is muted. Browsers that block autoplay start the music after the first click or keypress.
+* **Audio files** (`BGM.mp3`, `Correct.mp3`, `Wrong.mp3`, `button.mp3`):
+  - Keep these files beside `index.html` and `game.js` so the game can load them by their relative paths.
 * **`Game_Design.pdf`**:
   - The comprehensive master design document covering 5 Learning Outcomes (LO1–LO5), 15 levels, Endless Mode, assessment specifications, UI wireframes, and mission answers.
 * **`person1_tasks.txt`**:

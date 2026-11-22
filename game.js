@@ -127,11 +127,24 @@
     inHome = true;
   let completedLevelToReset = null;
   let explore = false,
-    sound = false,
+    musicEnabled = true,
     audio = null,
     lastTime = 0,
     toastTimer,
     quiz = null;
+  const correctSfx = new Audio("Correct.mp3"),
+    wrongSfx = new Audio("Wrong.mp3"),
+    backgroundMusic = new Audio("BGM.mp3"),
+    buttonSfx = new Audio("button.mp3");
+  correctSfx.preload = "auto";
+  correctSfx.volume = 0.1;
+  wrongSfx.preload = "auto";
+  wrongSfx.volume = 0.3;
+  backgroundMusic.preload = "auto";
+  backgroundMusic.loop = true;
+  backgroundMusic.volume = 0.2;
+  buttonSfx.preload = "auto";
+  buttonSfx.volume = 0.15;
   const keys = new Set();
   const rad = (a) => (a * Math.PI) / 180;
   const pos = (a, r = 220) => ({
@@ -216,7 +229,6 @@
     updateHome();
   }
   function beep(good = true) {
-    if (!sound) return;
     try {
       audio ||= new (window.AudioContext || window.webkitAudioContext)();
       const o = audio.createOscillator(),
@@ -234,6 +246,16 @@
       o.start();
       o.stop(audio.currentTime + 0.23);
     } catch {}
+  }
+  function playTrack(track) {
+    track.currentTime = 0;
+    const playback = track.play();
+    if (playback) {
+      playback.catch((error) => {
+        if (error.name !== "NotAllowedError")
+          console.error(`Unable to play ${track.src}`, error);
+      });
+    }
   }
   function toast(msg, error = false) {
     clearTimeout(toastTimer);
@@ -1386,7 +1408,8 @@
     state.hearts--;
     save();
     updateHUD();
-    beep(false);
+    if (state.mode === "story") playTrack(wrongSfx);
+    else beep(false);
     toast(message, true);
     if (state.stage === 0 && state.mode !== "rush") hint(true);
     if (state.hearts <= 0) {
@@ -1561,7 +1584,8 @@
     if (first) saved.first++;
     save();
     updateHUD();
-    beep();
+    if (state.mode === "story") playTrack(correctSfx);
+    else beep();
     $("effects").innerHTML =
       `<g transform="translate(${p.x} ${p.y})"><use href="#mouse"/><text y="-42" text-anchor="middle" fill="#985b3e" style="font:600 28px Outfit,sans-serif">+${earned} ✦</text><circle r="48" fill="none" stroke="#fff4c1" stroke-width="4" class="pulse"/></g>`;
     const original = { ...state.cat },
@@ -2371,7 +2395,7 @@
   $("map-button").onclick = showMap;
   $("journal").onclick = $("avatar").onclick = showJournal;
   $("restart").onclick = () => start(state.world, state.stage, state.mode);
-  $("sound").onclick = toggleSound;
+  $("sound").onclick = toggleMusic;
   $("endless").onclick = () => {
     start(0, 1, "rush");
     toast(
@@ -2568,19 +2592,27 @@
         (b) => (b.onclick = () => equipSkin(b.dataset.homeSkin, showSkins)),
       );
   }
-  function toggleSound() {
-    sound = !sound;
-    $("sound").classList.toggle("on", sound);
+  function toggleMusic() {
+    musicEnabled = !musicEnabled;
+    updateSoundButtons();
+    if (musicEnabled) {
+      playTrack(backgroundMusic);
+    } else {
+      backgroundMusic.pause();
+      backgroundMusic.currentTime = 0;
+    }
+  }
+  function updateSoundButtons() {
+    $("sound").classList.toggle("on", musicEnabled);
     $("sound").setAttribute(
       "aria-label",
-      sound ? "Mute sound" : "Enable sound",
+      musicEnabled ? "Mute background music" : "Enable background music",
     );
-    $("home-sound").textContent = sound ? "♫" : "♪";
+    $("home-sound").textContent = musicEnabled ? "♫" : "♪";
     $("home-sound").setAttribute(
       "aria-label",
-      sound ? "Mute sound" : "Enable sound",
+      musicEnabled ? "Mute background music" : "Enable background music",
     );
-    beep();
   }
   function boot() {
     scenery();
@@ -2588,6 +2620,17 @@
     start(0, 0);
     updateAssessments();
     showHome();
+    updateSoundButtons();
+    playTrack(backgroundMusic);
+    const resumeBackgroundMusic = () => {
+      if (musicEnabled && backgroundMusic.paused) playTrack(backgroundMusic);
+    };
+    document.addEventListener("pointerdown", resumeBackgroundMusic, {
+      once: true,
+    });
+    document.addEventListener("keydown", resumeBackgroundMusic, {
+      once: true,
+    });
     state.pendingGuide = true;
     requestAnimationFrame(tick);
   }
@@ -2601,10 +2644,15 @@
   $("home-badges").onclick = showBadges;
   $("home-report").onclick = showJournal;
   $("home-new-game").onclick = confirmNewGame;
-  $("home-sound").onclick = toggleSound;
+  $("home-sound").onclick = toggleMusic;
   $("return-home").onclick = showHome;
   $("assessment-pre").onclick = () => showAssessmentIntro("pre");
   $("assessment-post").onclick = () => showAssessmentIntro("post");
   $("assessment-results").onclick = showJournal;
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (target instanceof Element && target.closest("button"))
+      playTrack(buttonSfx);
+  });
   boot();
 })();
