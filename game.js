@@ -11,7 +11,7 @@
   const MISSION_COUNTS = [
     [5, 5, 5],
     [5, 5, 5],
-    [5, 5, 5],
+    [5, 5, 2],
     [5, 5, 5],
     [5, 5, 5],
   ];
@@ -71,16 +71,16 @@
       [
         ["cos", 330],
         ["cos", 135],
-        ["cos", 45],
-        ["sin", 45],
-        ["sin", 60],
+        ["sin", 150],
+        ["sin", 240],
+        ["sin", 315],
       ],
       [
+        ["tan", 135],
         ["sin", 225],
-        ["cos", 300],
-        ["sin", 210],
-        ["tan", 45],
-        ["cos", 315],
+        ["tan", 210],
+        ["cos", 150],
+        ["tan", 300],
       ],
     ],
   ];
@@ -500,7 +500,7 @@
       };
     }
 
-    // World 3: unit-circle movement, including the four-angle moving-target routes.
+    // World 3: unit-circle movement and the moving Challenge target.
     if (w === 2) {
       const a = choice.angle;
       const route =
@@ -510,13 +510,12 @@
       return {
         a,
         route,
-        routeIndex: 0,
         prompt:
           stage === 0
-            ? `The mouse is on the <strong>${a % 180 === 0 ? "horizontal" : "vertical"} axis</strong>. On the unit circle, <strong>x = cos θ</strong> and <strong>y = sin θ</strong>. Choose ${a % 180 === 0 ? "<strong>COS (C)</strong> to move horizontally" : "<strong>SIN (V)</strong> to move vertically"}, then catch it.`
+            ? `The mouse is on the <strong>${a % 180 === 0 ? "horizontal" : "vertical"} axis</strong>. On the unit circle, <strong>x = cos θ</strong> and <strong>y = sin θ</strong>. Choose ${a % 180 === 0 ? "<strong>COS </strong> to move horizontally" : "<strong>SIN </strong> to move vertically"}, then catch it.`
             : stage === 2
-              ? `Follow the moving mouse through <strong>${route.join("° → ")}°</strong>. Use COS for x = cos θ and SIN for y = sin θ.<br>Watch for the patrolling dog!`
-              : `Reach the mouse at <strong>${a}°</strong>. Use <strong>COS (C)</strong> for horizontal movement and x = cos θ; use <strong>SIN (V)</strong> for vertical movement and y = sin θ.`,
+              ? `The mouse is at <strong>${a}°</strong>. Use COS for x = cos θ and SIN for y = sin θ to catch it. Watch for the dog circling the mouse!`
+              : `Reach the mouse at <strong>${a}°</strong>. Use <strong>COS </strong> for horizontal movement and x = cos θ; use <strong>SIN </strong> for vertical movement and y = sin θ.`,
       };
     }
 
@@ -691,8 +690,6 @@
     $("answer-controls").innerHTML = "";
     $("clue-progress").innerHTML = "";
     if (z.seq) renderClues();
-    if (state.mode === "story" && w === 2 && s === 2)
-      renderCoordinateRoute();
     if (w === 2) {
       $("answer-controls").innerHTML =
         '<div class="axis-controls"><button data-axis="cos">COS <kbd>C</kbd></button><button data-axis="sin">SIN <kbd>V</kbd></button></div>';
@@ -785,12 +782,6 @@
         intro +
         `Go where <strong>cos θ is ${n === 1 || n === 4 ? "positive" : "negative"}</strong> and <strong>sin θ is ${n <= 2 ? "positive" : "negative"}</strong>.`;
     }
-  }
-  function renderCoordinateRoute() {
-    const route = state.question.route,
-      progress = state.question.routeIndex || 0;
-    $("clue-progress").innerHTML =
-      `<div class="clue-pills">${route.map((angle, i) => `<span class="${i < progress ? "passed" : i === progress ? "active" : ""}">${i < progress ? "✓" : angle + "°"}</span>`).join("")}</div>`;
   }
   function drawBoard() {
     // Render the active World board. Each world index below has its own field layout.
@@ -890,7 +881,7 @@
       }
     }
 
-    // World 3: moving mouse and patrolling dog.
+    // World 3: moving mouse and circling dog.
     if (w === 2) {
       e += `<g id="moving-mouse"><use href="#mouse"/><rect x="-30" y="-52" width="60" height="22" rx="7" class="speech"/><text y="-37" text-anchor="middle" class="axis-text">${z.a}°</text></g>`;
       if (s === 2) e += dog();
@@ -899,7 +890,7 @@
     if ((w === 1 || w === 3) && s === 2) e += dog();
     // World 1: moving bees for Challenge and Rush.
     if (w === 0 && (s === 2 || state.mode === "rush")) {
-      const count = state.mode === "rush" ? 3 : 1;
+      const count = 3;
       for (let i = 0; i < count; i++)
         e += `<g id="${count === 1 ? "bee" : "bee-" + i}"><ellipse rx="17" ry="12" fill="#edc576"/><path d="M-5-11v22m10-22v22" stroke="#6c6754" stroke-width="5"/><ellipse cx="-6" cy="-15" rx="8" ry="11" fill="#fbf5dcbb" transform="rotate(-25)"/><ellipse cx="7" cy="-15" rx="8" ry="11" fill="#fbf5dcbb" transform="rotate(25)"/><circle cx="12" cy="-3" r="2" fill="#534f3d"/></g>`;
     }
@@ -968,7 +959,7 @@
       s = state.stage;
     if (w === 0 && (s === 2 || state.mode === "rush")) {
       const rush = state.mode === "rush",
-        count = rush ? 3 : 1,
+        count = 3,
         available = ANGLES.filter((a) => a !== state.question?.a);
       state.bees = Array.from(
         { length: count },
@@ -993,20 +984,17 @@
       }
       if (s === 2) {
         const route = state.question.route,
-          a =
-            state.mode === "rush"
-              ? route[Math.floor(t / 4.5) % route.length]
-              : route[state.question.routeIndex];
+          a = route[Math.floor(t / 4.5) % route.length];
         state.target = pos(a);
         if (state.question.activeAngle !== a) {
           state.question.activeAngle = a;
           $("prompt").innerHTML =
-            `Follow the route <strong>${route.join("° → ")}°</strong>. Current target: <strong>${a}°</strong>. Use COS for x = cos θ and SIN for y = sin θ.<br>${state.mode === "rush" ? "Catch it before it moves and watch for the patrolling dog!" : "Catch each mouse in order and watch for the patrolling dog!"}`;
+            `The mouse is at <strong>${a}°</strong>. Use COS for x = cos θ and SIN for y = sin θ to catch it. Watch for the dog circling the mouse!`;
         }
         $("moving-mouse")
           ?.querySelector("text")
           ?.replaceChildren(document.createTextNode(a + "°"));
-        if (state.mode === "rush" && t % 4.5 > 3.5)
+        if (t % 4.5 > 3.5)
           $("moving-mouse")?.classList.add("pulse");
         else $("moving-mouse")?.classList.remove("pulse");
       }
@@ -1043,92 +1031,16 @@
   }
   function dogPosition() {
     if (state.world === 2) {
-      // Start and patrol inside the moving mouse's quadrant.
-      // If that area overlaps the mouse, fall back to another quadrant.
-      const t = state.elapsed;
-      const targetAngle = state.question.activeAngle ?? state.question.a;
-      const normalizedAngle = (targetAngle + 360) % 360;
-      const quadrant =
-        normalizedAngle < 90
-          ? 1
-          : normalizedAngle < 180
-            ? 2
-            : normalizedAngle < 270
-              ? 3
-              : 4;
-      const quadrantCenters = [0, 45, 135, 225, 315];
-      const quadrantCenter = quadrantCenters[quadrant];
-      const patrolAngle = quadrantCenter + Math.sin(t * 0.35) * 38;
-      const patrolRadius = 180 + Math.sin(t * 0.55) * 35;
-      let patrol = pos(patrolAngle, patrolRadius);
-
-      // Move to a different location if the dog overlaps the mouse's approach area.
-      if (dist(patrol, state.target) < 110) {
-        const alternatives = [
-          pos(quadrantCenter - 50, 150),
-          pos(quadrantCenter + 50, 150),
-          pos(quadrantCenter - 30, 215),
-          pos(quadrantCenter + 30, 215),
-          pos(quadrantCenter, 125),
-        ].filter((candidate) => dist(candidate, state.target) >= 110);
-
-        if (alternatives.length) {
-          patrol = alternatives.reduce((best, candidate) =>
-            dist(candidate, state.target) > dist(best, state.target)
-              ? candidate
-              : best,
-          );
-        } else {
-          const fallbackCenters = [45, 135, 225, 315].filter(
-            (center) =>
-              (center === 45
-                ? 1
-                : center === 135
-                  ? 2
-                  : center === 225
-                    ? 3
-                    : 4) !== quadrant,
-          );
-          patrol = fallbackCenters
-            .map((center) => pos(center, 190))
-            .reduce((best, candidate) =>
-              dist(candidate, state.target) > dist(best, state.target)
-                ? candidate
-                : best,
-            );
-        }
-      }
-
-      // Never let the dog enter the origin/safe area around the cat.
-      const origin = { x: 450, y: 350 };
-      if (dist(patrol, origin) < 145) {
-        const originSafeCandidates = [
-          pos(quadrantCenter - 40, 220),
-          pos(quadrantCenter + 40, 220),
-          pos(quadrantCenter - 65, 175),
-          pos(quadrantCenter + 65, 175),
-          pos(quadrantCenter, 220),
-        ].filter(
-          (candidate) =>
-            dist(candidate, origin) >= 145 &&
-            dist(candidate, state.target) >= 90,
-        );
-        if (originSafeCandidates.length) {
-          patrol = originSafeCandidates.reduce((best, candidate) =>
-            dist(candidate, state.target) > dist(best, state.target)
-              ? candidate
-              : best,
-          );
-        } else {
-          patrol = pos(quadrantCenter, 220);
-        }
-      }
-
-      // Keep patrol sprites away from the top/bottom SVG origin edges.
-      patrol.x = Math.max(150, Math.min(750, patrol.x));
-      patrol.y = Math.max(110, Math.min(590, patrol.y));
-
-      return patrol;
+      const orbitRadius = 120,
+        targetAngle = Math.atan2(
+          state.target.y - 350,
+          state.target.x - 450,
+        ),
+        angle = targetAngle + state.elapsed;
+      return {
+        x: state.target.x + Math.cos(angle) * orbitRadius,
+        y: state.target.y + Math.sin(angle) * orbitRadius,
+      };
     }
     return {
       x: 450 + Math.sin(state.elapsed * 0.7) * 205,
@@ -1453,27 +1365,6 @@
         } else toast("A little closer! Move toward the mouse, then catch.");
         return;
       }
-      if (
-        s === 2 &&
-        state.mode !== "rush" &&
-        state.question.routeIndex < state.question.route.length - 1
-      ) {
-        const caughtAngle = state.question.route[state.question.routeIndex];
-        state.question.routeIndex++;
-        const nextAngle = state.question.route[state.question.routeIndex];
-        state.question.activeAngle = null;
-        state.target = pos(nextAngle);
-        state.axis = null;
-        state.moveTo = null;
-        keys.clear();
-        renderCoordinateRoute();
-        updateCat();
-        toast(
-          `Caught ${caughtAngle}°. Now catch the mouse at ${nextAngle}°.`,
-        );
-        beep();
-        return;
-      }
       success(state.target);
       return;
     }
@@ -1663,7 +1554,7 @@
         "Read the mission. All angles start at <strong>0° on the right</strong> and grow counterclockwise.",
         "Click a bush to aim, then press <strong>Space</strong> or <strong>Catch the mouse</strong>.",
         s === 2
-          ? "One bee changes bushes every <strong>5 seconds</strong>. If it blocks another bush, wait before catching."
+          ? "Three bees change bushes every <strong>5 seconds</strong>. Avoid their bushes when choosing where to catch."
           : `Find ${missionCount()} mice to complete the level. Wrong answers cost one heart and reveal a hint.`,
       ];
 
@@ -1684,7 +1575,7 @@
     // ==================== WORLD 3: COORDINATE VALLEY GUIDE ====================
     if (w === 2)
       steps = [
-        "The cat starts facing forward. Choose <strong>COS (C)</strong> for horizontal movement or <strong>SIN (V)</strong> for vertical movement.",
+        "The cat starts facing forward. Choose <strong>COS </strong> for horizontal movement or <strong>SIN </strong> for vertical movement.",
         "After choosing an axis, a line appears beside the cat. Use <strong>A / D</strong> for COS or <strong>W / S</strong> for SIN. Switch axes whenever you need.",
         "Move close to the mouse and press <strong>Enter</strong> or <strong>Space</strong> to catch. You can also swipe near the mouse." +
           (s === 2
