@@ -2520,6 +2520,16 @@
   $("assessment-pre").onclick = () => showAssessmentIntro("pre");
   $("assessment-post").onclick = () => showAssessmentIntro("post");
   $("assessment-results").onclick = showJournal;
+  $("sidebar-toggle").onclick = () => {
+    const collapsed = document.body.classList.toggle("sidebar-collapsed");
+    const label = collapsed ? "Expand sidebar" : "Collapse sidebar";
+    $("sidebar-toggle").setAttribute("aria-label", label);
+    $("sidebar-toggle").setAttribute("aria-expanded", String(!collapsed));
+    $("sidebar-toggle").title = label;
+    $("sidebar-toggle").querySelector("span").textContent = collapsed
+      ? "›"
+      : "‹";
+  };
   document.addEventListener("click", (event) => {
     const target = event.target;
     if (target instanceof Element && target.closest("button"))

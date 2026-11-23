@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fff8ed"><meta name="description" content="A little cat. A big adventure in trigonometry. Explore five worlds, solve puzzles, and catch some clever mice."><title>Hungry Cat</title><link rel="stylesheet" href="style.css"></head>
-<body class="home-active">
+<body class="home-active sidebar-collapsed">
 <section id="home-screen" class="home-screen" aria-label="Main menu">
  <div class="home-wrap">
   <header class="home-hero">
@@ -16,8 +16,9 @@
   <p class="home-footnote">Your adventure is saved on this device. ✦</p>
  </div>
 </section>
-<aside class="sidebar">
+<aside class="sidebar" id="app-sidebar">
  <a class="brand" href="./" aria-label="Hungry Cat home"><span class="brand-cat"><svg width="38" height="40" viewBox="0 0 40 40" aria-hidden="true"><path d="M6 20 5 7l12 8h6l12-8-1 16c-1 15-27 15-28-3Z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/><path d="m12 24 4 1m8 0 4-1m-10 6h4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span><span>hungry<span class="brand-light">cat</span><small>MATH ADVENTURE</small></span></a>
+ <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-label="Expand sidebar" aria-controls="app-sidebar" aria-expanded="false" title="Expand sidebar"><span aria-hidden="true">›</span></button>
  <div class="sidebar-label">YOUR ADVENTURE</div>
  <nav id="world-nav" aria-label="Worlds"></nav>
  <button class="rush" id="endless"><span>∞</span><div>Mouse Rush<small>Endless adventure</small></div><span class="tiny-tag">PLAY</span></button>
